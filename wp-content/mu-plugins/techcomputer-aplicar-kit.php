@@ -88,6 +88,13 @@ function tc_admin_page() {
 		}
 		update_option( 'tc_setup_version', TC_SETUP_VERSION );
 		$result = array( 'refresh' => $updated );
+	} elseif ( isset( $_POST['tc_create_landings'] ) && check_admin_referer( 'tc_setup_action' ) ) {
+		if ( function_exists( 'tc_ad_landing_reset_pages' ) ) {
+			tc_ad_landing_reset_pages();
+			$result = array( 'landings' => true );
+		} else {
+			$result = new WP_Error( 'no_landings', 'No se encontró el módulo de landing pages.' );
+		}
 	}
 
 	$product_count = tc_count_products();
@@ -114,6 +121,8 @@ function tc_admin_page() {
 			</div>
 		<?php elseif ( is_array( $result ) && isset( $result['refresh'] ) ) : ?>
 			<div class="notice notice-success"><p>Contenido actualizado en <?php echo (int) $result['refresh']; ?> página(s).</p></div>
+		<?php elseif ( is_array( $result ) && ! empty( $result['landings'] ) ) : ?>
+			<div class="notice notice-success"><p><strong>Landing pages creadas o actualizadas.</strong> Revisa los enlaces abajo.</p></div>
 		<?php endif; ?>
 
 		<table class="widefat" style="max-width:760px;margin:20px 0">
@@ -146,6 +155,21 @@ function tc_admin_page() {
 			<li>Aplica reseñas de Google (testimonios) y enlaces de botones</li>
 			<li>Crea menú de navegación</li>
 		</ul>
+
+		<form method="post" style="margin-bottom:16px">
+			<?php wp_nonce_field( 'tc_setup_action' ); ?>
+			<?php submit_button( 'Crear / actualizar landing pages publicitarias', 'secondary', 'tc_create_landings', false ); ?>
+			<p class="description">Genera las páginas: pantallas, bisagras, mantención, reparación, etc., con el diseño actual del sitio.</p>
+		</form>
+
+		<?php if ( function_exists( 'tc_ad_landing_definitions' ) ) : ?>
+		<h2>Landing pages</h2>
+		<ul style="list-style:disc;padding-left:20px;max-width:760px">
+			<?php foreach ( tc_ad_landing_definitions() as $slug => $def ) : ?>
+				<li><a href="<?php echo esc_url( home_url( '/' . $slug . '/' ) ); ?>" target="_blank"><?php echo esc_html( $def['title'] ); ?></a> <code>/<?php echo esc_html( $slug ); ?>/</code></li>
+			<?php endforeach; ?>
+		</ul>
+		<?php endif; ?>
 
 		<form method="post" style="margin-bottom:16px">
 			<?php wp_nonce_field( 'tc_setup_action' ); ?>
