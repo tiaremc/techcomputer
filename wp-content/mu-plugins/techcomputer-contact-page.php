@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'TC_CONTACT_PAGE_VERSION', '2' );
+define( 'TC_CONTACT_PAGE_VERSION', '3' );
 
 add_action( 'init', 'tc_contact_page_register_shortcode' );
 add_action( 'init', 'tc_contact_page_maybe_rebuild', 25 );
@@ -99,10 +99,23 @@ function tc_contact_page_filter_content( $content ) {
 }
 
 function tc_contact_page_hero_url() {
-	if ( function_exists( 'tc_single_product_hero_banner_url' ) ) {
-		return tc_single_product_hero_banner_url();
+	$candidates = array(
+		WP_CONTENT_DIR . '/uploads/2026/05/Subhero-Background.png',
+		WP_CONTENT_DIR . '/uploads/2026/05/Hero-BG-1.png',
+		WP_CONTENT_DIR . '/uploads/2026/06/tc-product-hero-banner.png',
+	);
+	foreach ( $candidates as $path ) {
+		if ( file_exists( $path ) ) {
+			return content_url( str_replace( WP_CONTENT_DIR, '', $path ) );
+		}
 	}
-	return content_url( 'uploads/2026/06/tc-product-hero-banner.png' );
+	if ( function_exists( 'tc_single_product_hero_banner_url' ) ) {
+		$url = tc_single_product_hero_banner_url();
+		if ( $url ) {
+			return $url;
+		}
+	}
+	return 'https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Subhero-Background.png';
 }
 
 function tc_contact_page_render() {
@@ -123,7 +136,8 @@ function tc_contact_page_render() {
 	ob_start();
 	?>
 	<div class="tc-contact-page">
-		<section class="tc-contact-page__hero" style="background-image:url('<?php echo esc_url( tc_contact_page_hero_url() ); ?>')">
+		<section class="tc-contact-page__hero" style="--tc-contact-hero:url('<?php echo esc_url( tc_contact_page_hero_url() ); ?>')">
+			<div class="tc-contact-page__hero-overlay"></div>
 			<div class="tc-contact-page__hero-inner">
 				<h1><?php esc_html_e( 'Contáctanos', 'techcomputer' ); ?></h1>
 			</div>
@@ -180,7 +194,7 @@ function tc_contact_page_render() {
 
 		<?php if ( function_exists( 'tc_render_directions_section' ) ) : ?>
 		<section class="tc-contact-page__directions">
-			<?php tc_render_directions_section(); ?>
+			<?php tc_render_directions_section( true ); ?>
 		</section>
 		<?php endif; ?>
 	</div>
@@ -193,6 +207,10 @@ function tc_contact_page_enqueue_assets() {
 		return;
 	}
 
+	if ( function_exists( 'tc_enqueue_directions_assets' ) ) {
+		tc_enqueue_directions_assets();
+	}
+
 	$p = function_exists( 'tc_brand_palette' ) ? tc_brand_palette() : array(
 		'primary'   => '#528A31',
 		'primary_d' => '#3d6a24',
@@ -202,9 +220,11 @@ function tc_contact_page_enqueue_assets() {
 	);
 
 	$css = '
-.tc-contact-page{color:' . $p['body'] . ';line-height:1.65}
-.tc-contact-page__hero{background:linear-gradient(135deg,rgba(30,41,59,.86),rgba(82,138,49,.78)) center/cover no-repeat;padding:72px 20px 64px;text-align:center;color:#fff;border-radius:0 0 24px 24px;margin-bottom:32px}
-.tc-contact-page__hero h1{margin:0;font-size:clamp(2rem,4vw,2.8rem);color:#fff}
+.tc-contact-page{color:' . $p['body'] . ';line-height:1.65;overflow-x:hidden}
+.tc-contact-page__hero{position:relative;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);margin-bottom:40px;min-height:240px;display:flex;align-items:center;justify-content:center;padding:88px 20px 72px;border-radius:0 0 20px 20px;overflow:hidden;background-color:' . $p['dark'] . ';background-image:linear-gradient(135deg,rgba(82,138,49,.82),rgba(30,41,59,.78)),var(--tc-contact-hero);background-size:cover;background-position:center center;background-repeat:no-repeat}
+.tc-contact-page__hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.18));pointer-events:none}
+.tc-contact-page__hero-inner{position:relative;z-index:1;text-align:center;max-width:900px}
+.tc-contact-page__hero h1{margin:0;font-size:clamp(2.2rem,4.5vw,3rem);color:#fff;font-weight:700;text-shadow:0 2px 16px rgba(0,0,0,.25)}
 .tc-contact-page__body{max-width:1140px;margin:0 auto;padding:0 20px 48px}
 .tc-contact-breadcrumb{text-align:center;margin:0 0 28px;color:#64748b;font-size:.95rem}
 .tc-contact-breadcrumb a{color:' . $p['primary'] . ';font-weight:600;text-decoration:none}
@@ -219,8 +239,9 @@ function tc_contact_page_enqueue_assets() {
 .tc-contact-page__banner h2{margin:0 0 8px;color:' . $p['dark'] . '}
 .tc-contact-page__banner p{margin:0 0 18px}
 .tc-contact-page__wa-btn{display:inline-flex;background:#25D366;color:#fff!important;padding:14px 26px;border-radius:12px;font-weight:800;text-decoration:none!important}
-.tc-contact-page__directions{max-width:1140px;margin:0 auto;padding:0 20px 48px}
-@media(max-width:900px){.tc-contact-page__grid{grid-template-columns:1fr}}
+.tc-contact-page__directions{max-width:none;margin:0;padding:0}
+.tc-contact-page__directions .tc-directions-section{margin:0;border-radius:0}
+@media(max-width:900px){.tc-contact-page__grid{grid-template-columns:1fr}.tc-contact-page__hero{min-height:200px;padding:72px 16px 56px}}
 ';
 
 	wp_register_style( 'tc-contact-page-full', false, array( 'tc-brand-colors' ), TC_CONTACT_PAGE_VERSION );

@@ -3010,7 +3010,13 @@ function tc_directions_config() {
 }
 
 function tc_should_show_directions_section() {
-	return is_singular( 'page' ) && is_front_page();
+	if ( is_singular( 'page' ) && is_front_page() ) {
+		return true;
+	}
+	if ( function_exists( 'tc_contact_page_is_active' ) && tc_contact_page_is_active() ) {
+		return true;
+	}
+	return false;
 }
 
 function tc_append_directions_to_home( $content ) {
@@ -3061,8 +3067,8 @@ function tc_enqueue_directions_assets() {
 	);
 }
 
-function tc_render_directions_section() {
-	if ( ! tc_should_show_directions_section() ) {
+function tc_render_directions_section( $force = false ) {
+	if ( ! $force && ! tc_should_show_directions_section() ) {
 		return;
 	}
 	$config = tc_directions_config();
