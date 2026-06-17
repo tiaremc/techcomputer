@@ -19,9 +19,9 @@ wp-content/backups/
 Thumbs.db
 desktop.ini
 
-# Dependencias de desarrollo
+# Dependencias de desarrollo (solo raíz del proyecto)
 node_modules/
-vendor/
+/vendor/
 
 # Entornos locales
 .env
