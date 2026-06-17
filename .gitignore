@@ -1,0 +1,31 @@
+# Configuración local (contiene credenciales)
+wp-config.php
+local-xdebuginfo.php
+
+# Archivos grandes / temporales
+wp-content.zip
+*.zip
+*.tar.gz
+
+# Medios subidos (muy pesados para Git)
+wp-content/uploads/
+
+# Backups y migraciones
+wp-content/ai1wm-backups/
+wp-content/upgrade/
+wp-content/cache/
+wp-content/backups/
+
+# Logs y archivos del sistema
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dependencias de desarrollo
+node_modules/
+vendor/
+
+# Entornos locales
+.env
+.env.*
