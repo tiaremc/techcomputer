@@ -1,0 +1,520 @@
+{
+    "version": "0.4",
+    "title": "Single Noticias",
+    "type": "section",
+    "metadata": {
+        "template_type": "single-post",
+        "include_in_zip": "1",
+        "elementor_pro_required": null,
+        "wp_page_template": "default"
+    },
+    "content": [
+        {
+            "id": "5eba9579",
+            "settings": {
+                "flex_direction": "column",
+                "margin": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "50",
+                    "left": "0",
+                    "isLinked": false
+                },
+                "padding": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "0",
+                    "left": "0",
+                    "isLinked": false
+                },
+                "padding_tablet": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "25",
+                    "bottom": "0",
+                    "left": "25",
+                    "isLinked": false
+                },
+                "animation": "fadeInDown"
+            },
+            "elements": [
+                {
+                    "id": "4674542f",
+                    "settings": {
+                        "content_width": "full",
+                        "background_background": "classic",
+                        "background_image": {
+                            "id": 119,
+                            "url": "https:\/\/nvb.nirmanavisual.com\/electromart\/wp-content\/uploads\/sites\/2\/2025\/07\/Subhero-Background.png",
+                            "alt": "",
+                            "source": "library",
+                            "size": ""
+                        },
+                        "background_position": "top center",
+                        "background_repeat": "no-repeat",
+                        "background_size": "cover",
+                        "border_radius_tablet": {
+                            "unit": "px",
+                            "top": "20",
+                            "right": "20",
+                            "bottom": "20",
+                            "left": "20",
+                            "isLinked": true
+                        },
+                        "margin": {
+                            "unit": "px",
+                            "top": "0",
+                            "right": "0",
+                            "bottom": "0",
+                            "left": "0",
+                            "isLinked": false
+                        },
+                        "padding": {
+                            "unit": "px",
+                            "top": "0",
+                            "right": "0",
+                            "bottom": "98",
+                            "left": "0",
+                            "isLinked": false
+                        },
+                        "__globals__": {
+                            "background_overlay_color": "globals\/colors?id=primary"
+                        }
+                    },
+                    "elements": [
+                        {
+                            "id": "2f86d2a2",
+                            "settings": {
+                                "title": "Hot Picks of the Week",
+                                "_margin": {
+                                    "unit": "px",
+                                    "top": "66",
+                                    "right": "0",
+                                    "bottom": "0",
+                                    "left": "0",
+                                    "isLinked": false
+                                },
+                                "_padding": {
+                                    "unit": "px",
+                                    "top": "0",
+                                    "right": "0",
+                                    "bottom": "0",
+                                    "left": "0",
+                                    "isLinked": false
+                                },
+                                "_flex_align_self": "center",
+                                "__globals__": {
+                                    "title_color": "globals\/colors?id=secondary",
+                                    "typography_typography": "globals\/typography?id=secondary"
+                                }
+                            },
+                            "elements": [],
+                            "isInner": false,
+                            "widgetType": "heading",
+                            "elType": "widget"
+                        }
+                    ],
+                    "isInner": true,
+                    "elType": "container"
+                }
+            ],
+            "isInner": false,
+            "elType": "container"
+        },
+        {
+            "id": "73e6e501",
+            "settings": {
+                "flex_direction": "column",
+                "flex_gap": {
+                    "column": "12",
+                    "row": "12",
+                    "isLinked": true,
+                    "unit": "px",
+                    "size": 12
+                },
+                "margin": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "0",
+                    "left": "0",
+                    "isLinked": false
+                },
+                "padding": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "0",
+                    "left": "0",
+                    "isLinked": false
+                },
+                "padding_tablet": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "25",
+                    "bottom": "0",
+                    "left": "25",
+                    "isLinked": false
+                }
+            },
+            "elements": [
+                {
+                    "id": "1b304f7c",
+                    "settings": {
+                        "title": "Overview",
+                        "align": "left",
+                        "_flex_align_self": "flex-start",
+                        "__globals__": {
+                            "typography_typography": "globals\/typography?id=07fbd51",
+                            "title_color": "globals\/colors?id=primary"
+                        },
+                        "align_mobile": "center",
+                        "_flex_align_self_mobile": "center"
+                    },
+                    "elements": [],
+                    "isInner": false,
+                    "widgetType": "heading",
+                    "elType": "widget"
+                },
+                {
+                    "id": "79d1c4c0",
+                    "settings": {
+                        "editor": "<p>Diagnóstico profesional, atención rápida y garantía escrita en Santiago. Sed sed ex sit amet nibh eleifend pharetra vitae ac lacus. Cras accumsan ex sollicitudin urna bibendum, id elementum nisi laoreet. Pellentesque vitae dui in orci congue tempor.\u00a0<\/p>",
+                        "paragraph_spacing": {
+                            "unit": "px",
+                            "size": 0,
+                            "sizes": []
+                        },
+                        "__globals__": {
+                            "typography_typography": "globals\/typography?id=text",
+                            "text_color": "globals\/colors?id=primary"
+                        },
+                        "align_mobile": "justify",
+                        "_flex_align_self_mobile": "center"
+                    },
+                    "elements": [],
+                    "isInner": false,
+                    "widgetType": "text-editor",
+                    "elType": "widget"
+                },
+                {
+                    "id": "276fbfbe",
+                    "settings": {
+                        "editor": "<p>Diagnóstico profesional, atención rápida y garantía escrita en Santiago. Sed sed ex sit amet nibh eleifend pharetra vitae ac lacus. Cras accumsan ex sollicitudin urna bibendum, id elementum nisi laoreet. Pellentesque vitae dui in orci congue tempor. Morbi felis turpis, tristique a libero in, faucibus tempus dui. Phasellus nec lacus orci. Fusce in sem fermentum, pellentesque velit in, facilisis purus.<\/p>",
+                        "paragraph_spacing": {
+                            "unit": "px",
+                            "size": 12,
+                            "sizes": []
+                        },
+                        "__globals__": {
+                            "typography_typography": "globals\/typography?id=text",
+                            "text_color": "globals\/colors?id=primary"
+                        },
+                        "align_mobile": "justify"
+                    },
+                    "elements": [],
+                    "isInner": false,
+                    "widgetType": "text-editor",
+                    "elType": "widget"
+                },
+                {
+                    "id": "1ff8792e",
+                    "settings": {
+                        "image": {
+                            "id": 327,
+                            "url": "https:\/\/nvb.nirmanavisual.com\/electromart\/wp-content\/uploads\/sites\/2\/2025\/07\/Single-Post-Photo.png",
+                            "alt": "",
+                            "source": "library",
+                            "size": ""
+                        },
+                        "width": {
+                            "unit": "%",
+                            "size": 100,
+                            "sizes": []
+                        },
+                        "height": {
+                            "unit": "px",
+                            "size": 351,
+                            "sizes": []
+                        },
+                        "object-fit": "cover",
+                        "image_border_radius": {
+                            "unit": "px",
+                            "top": "20",
+                            "right": "20",
+                            "bottom": "20",
+                            "left": "20",
+                            "isLinked": true
+                        }
+                    },
+                    "elements": [],
+                    "isInner": false,
+                    "widgetType": "image",
+                    "elType": "widget"
+                },
+                {
+                    "id": "57709d35",
+                    "settings": {
+                        "content_width": "full",
+                        "flex_direction": "row",
+                        "margin": {
+                            "unit": "px",
+                            "top": "19",
+                            "right": "0",
+                            "bottom": "0",
+                            "left": "0",
+                            "isLinked": false
+                        },
+                        "padding": {
+                            "unit": "px",
+                            "top": "0",
+                            "right": "0",
+                            "bottom": "0",
+                            "left": "0",
+                            "isLinked": false
+                        }
+                    },
+                    "elements": [
+                        {
+                            "id": "6725a9e8",
+                            "settings": {
+                                "content_width": "full",
+                                "margin": {
+                                    "unit": "px",
+                                    "top": "0",
+                                    "right": "0",
+                                    "bottom": "0",
+                                    "left": "0",
+                                    "isLinked": false
+                                },
+                                "padding": {
+                                    "unit": "px",
+                                    "top": "0",
+                                    "right": "0",
+                                    "bottom": "0",
+                                    "left": "0",
+                                    "isLinked": false
+                                }
+                            },
+                            "elements": [
+                                {
+                                    "id": "58b25e07",
+                                    "settings": {
+                                        "editor": "<p>Diagnóstico profesional, atención rápida y garantía escrita en Santiago. Sed sed ex sit amet nibh eleifend pharetra vitae ac lacus. Cras accumsan ex sollicitudin urna bibendum, id elementum nisi laoreet. Pellentesque vitae dui in orci congue tempor. Morbi felis turpis, tristique a libero in, faucibus tempus dui. Phasellus nec lacus orci. Fusce in sem fermentum, pellentesque velit in, facilisis purus.<\/p>",
+                                        "paragraph_spacing": {
+                                            "unit": "px",
+                                            "size": 12,
+                                            "sizes": []
+                                        },
+                                        "__globals__": {
+                                            "typography_typography": "globals\/typography?id=text",
+                                            "text_color": "globals\/colors?id=primary"
+                                        },
+                                        "align": "justify",
+                                        "align_tablet": "justify"
+                                    },
+                                    "elements": [],
+                                    "isInner": false,
+                                    "widgetType": "text-editor",
+                                    "elType": "widget"
+                                },
+                                {
+                                    "id": "186f708b",
+                                    "settings": {
+                                        "editor": "<p>Diagnóstico profesional, atención rápida y garantía escrita en Santiago. Sed sed ex sit amet nibh eleifend pharetra vitae ac lacus. Cras accumsan ex sollicitudin urna bibendum, id elementum nisi laoreet. Pellentesque vitae dui in orci congue tempor. Morbi felis turpis, tristique a libero in, faucibus tempus dui. Phasellus nec lacus orci. Fusce in sem fermentum, pellentesque velit in, facilisis purus.<\/p>",
+                                        "paragraph_spacing": {
+                                            "unit": "px",
+                                            "size": 12,
+                                            "sizes": []
+                                        },
+                                        "__globals__": {
+                                            "typography_typography": "globals\/typography?id=text",
+                                            "text_color": "globals\/colors?id=primary"
+                                        },
+                                        "align": "justify",
+                                        "align_tablet": "justify"
+                                    },
+                                    "elements": [],
+                                    "isInner": false,
+                                    "widgetType": "text-editor",
+                                    "elType": "widget"
+                                }
+                            ],
+                            "isInner": true,
+                            "elType": "container"
+                        },
+                        {
+                            "id": "b124de2",
+                            "settings": {
+                                "content_width": "full",
+                                "width": {
+                                    "unit": "%",
+                                    "size": 29,
+                                    "sizes": []
+                                },
+                                "border_border": "solid",
+                                "border_width": {
+                                    "unit": "px",
+                                    "top": "1",
+                                    "right": "1",
+                                    "bottom": "1",
+                                    "left": "1",
+                                    "isLinked": true
+                                },
+                                "border_radius": {
+                                    "unit": "px",
+                                    "top": "20",
+                                    "right": "20",
+                                    "bottom": "20",
+                                    "left": "20",
+                                    "isLinked": true
+                                },
+                                "margin": {
+                                    "unit": "px",
+                                    "top": "0",
+                                    "right": "0",
+                                    "bottom": "0",
+                                    "left": "0",
+                                    "isLinked": false
+                                },
+                                "padding": {
+                                    "unit": "px",
+                                    "top": "36",
+                                    "right": "36",
+                                    "bottom": "36",
+                                    "left": "36",
+                                    "isLinked": true
+                                },
+                                "__globals__": {
+                                    "border_color": "globals\/colors?id=primary",
+                                    "background_color": "globals\/colors?id=c144476"
+                                },
+                                "width_tablet": {
+                                    "unit": "px",
+                                    "size": 521,
+                                    "sizes": []
+                                },
+                                "flex_justify_content_tablet": "flex-start",
+                                "_flex_align_self_tablet": "flex-start",
+                                "animation": "fadeInRight"
+                            },
+                            "elements": [
+                                {
+                                    "id": "180b53db",
+                                    "settings": {
+                                        "title": "Have an Idea? Let\u2019s Make It Happen",
+                                        "align": "left",
+                                        "_flex_align_self": "flex-start",
+                                        "__globals__": {
+                                            "typography_typography": "globals\/typography?id=07fbd51",
+                                            "title_color": "globals\/colors?id=primary"
+                                        },
+                                        "align_mobile": "center"
+                                    },
+                                    "elements": [],
+                                    "isInner": false,
+                                    "widgetType": "heading",
+                                    "elType": "widget"
+                                },
+                                {
+                                    "id": "3e4c34f1",
+                                    "settings": {
+                                        "mf_form_id": "309***1752201451499"
+                                    },
+                                    "elements": [],
+                                    "isInner": false,
+                                    "widgetType": "metform",
+                                    "elType": "widget"
+                                }
+                            ],
+                            "isInner": true,
+                            "elType": "container"
+                        }
+                    ],
+                    "isInner": true,
+                    "elType": "container"
+                }
+            ],
+            "isInner": false,
+            "elType": "container"
+        },
+        {
+            "id": "1c1b5bf1",
+            "settings": {
+                "flex_direction": "column",
+                "margin": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "100",
+                    "left": "0",
+                    "isLinked": false
+                },
+                "padding": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "0",
+                    "left": "0",
+                    "isLinked": false
+                },
+                "margin_tablet": {
+                    "unit": "px",
+                    "top": "100",
+                    "right": "0",
+                    "bottom": "100",
+                    "left": "0",
+                    "isLinked": false
+                },
+                "padding_tablet": {
+                    "unit": "px",
+                    "top": "0",
+                    "right": "25",
+                    "bottom": "0",
+                    "left": "25",
+                    "isLinked": false
+                }
+            },
+            "elements": [
+                {
+                    "id": "520bf5fe",
+                    "settings": {
+                        "title": "Leave a Reply",
+                        "align": "left",
+                        "_flex_align_self": "flex-start",
+                        "__globals__": {
+                            "typography_typography": "globals\/typography?id=07fbd51",
+                            "title_color": "globals\/colors?id=primary"
+                        },
+                        "align_mobile": "center",
+                        "_flex_align_self_mobile": "center"
+                    },
+                    "elements": [],
+                    "isInner": false,
+                    "widgetType": "heading",
+                    "elType": "widget"
+                },
+                {
+                    "id": "1cee9cbb",
+                    "settings": {
+                        "mf_form_id": "328***1752201603498"
+                    },
+                    "elements": [],
+                    "isInner": false,
+                    "widgetType": "metform",
+                    "elType": "widget"
+                }
+            ],
+            "isInner": false,
+            "elType": "container"
+        }
+    ],
+    "page_settings": {
+        "background_background": "classic",
+        "__globals__": {
+            "background_color": "globals\/colors?id=secondary"
+        }
+    }
+}

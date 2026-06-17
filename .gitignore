@@ -7,9 +7,6 @@ wp-content.zip
 *.zip
 *.tar.gz
 
-# Medios subidos (muy pesados para Git)
-wp-content/uploads/
-
 # Backups y migraciones
 wp-content/ai1wm-backups/
 wp-content/upgrade/

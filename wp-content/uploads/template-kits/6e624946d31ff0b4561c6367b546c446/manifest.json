@@ -1,0 +1,1065 @@
+{
+    "manifest_version": "1.0.23",
+    "title": "Techcomputer - Servicio Técnico Notebook Elementor Template Kit",
+    "page_builder": "elementor",
+    "kit_version": "1.0.0",
+    "templates": [
+        {
+            "name": "Global Kit Styles",
+            "screenshot": "screenshots/global-kit-styles.png",
+            "source": "templates/global.json",
+            "preview_url": "https://nvb.nirmanavisual.com",
+            "type": "section",
+            "category": "page",
+            "metadata": {
+                "template_type": "global-styles",
+                "include_in_zip": "1",
+                "elementor_pro_required": null,
+                "additional_template_information": [
+                    "These are the global theme styles configured through the Elementor Theme Styles area."
+                ]
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Forms",
+            "screenshot": "screenshots/forms.png",
+            "source": "templates/forms.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/forms/",
+            "type": "page",
+            "category": "page",
+            "metadata": {
+                "template_type": "single-page",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "404",
+            "screenshot": "screenshots/404.png",
+            "source": "templates/404.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/404/",
+            "type": "page",
+            "category": "page",
+            "metadata": {
+                "template_type": "single-404",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "News",
+            "screenshot": "screenshots/news.png",
+            "source": "templates/news.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/news/",
+            "type": "page",
+            "category": "page",
+            "metadata": {
+                "template_type": "archive-blog",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Testimonial",
+            "screenshot": "screenshots/testimonial.png",
+            "source": "templates/testimonial.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/testimonial/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-testimonial",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "FAQ",
+            "screenshot": "screenshots/faq.png",
+            "source": "templates/faq.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/faq/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-faq",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Contact Us",
+            "screenshot": "screenshots/contact-us.png",
+            "source": "templates/contact-us.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/contact-us/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-contact",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Our Team",
+            "screenshot": "screenshots/our-team.png",
+            "source": "templates/our-team.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/our-team/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-team",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Single News",
+            "screenshot": "screenshots/single-news.png",
+            "source": "templates/single-news.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/single-news/",
+            "type": "page",
+            "category": "page",
+            "metadata": {
+                "template_type": "single-post",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Product",
+            "screenshot": "screenshots/product.png",
+            "source": "templates/product.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/product/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-product",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Services",
+            "screenshot": "screenshots/services.png",
+            "source": "templates/services.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/services/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-services",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "About Us",
+            "screenshot": "screenshots/about-us.png",
+            "source": "templates/about-us.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/about-us/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-about",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Home",
+            "screenshot": "screenshots/home.png",
+            "source": "templates/home.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/home/",
+            "type": "page",
+            "category": "page",
+            "metadata": {
+                "template_type": "single-page",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Footer",
+            "screenshot": "screenshots/footer.png",
+            "source": "templates/footer.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/footer/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-footer",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        },
+        {
+            "name": "Header",
+            "screenshot": "screenshots/header.png",
+            "source": "templates/header.json",
+            "preview_url": "https://nvb.nirmanavisual.com/electromart/template-kit/header/",
+            "type": "section",
+            "category": "section",
+            "metadata": {
+                "template_type": "section-header",
+                "include_in_zip": "1",
+                "elementor_pro_required": null
+            },
+            "elementor_pro_required": false
+        }
+    ],
+    "required_plugins": [
+        {
+            "name": "Elementor",
+            "version": "3.30.2",
+            "file": "elementor/elementor.php",
+            "author": "Elementor.com"
+        },
+        {
+            "name": "ElementsKit Lite",
+            "version": "3.5.4",
+            "file": "elementskit-lite/elementskit-lite.php",
+            "author": "Wpmet"
+        },
+        {
+            "name": "Events Addon for Elementor",
+            "version": "2.2.9",
+            "file": "events-addon-for-elementor/events-addon-for-elementor.php",
+            "author": "NicheAddons"
+        },
+        {
+            "name": "Ultimate Addons for Elementor Lite",
+            "version": "2.4.4",
+            "file": "header-footer-elementor/header-footer-elementor.php",
+            "author": "Brainstorm Force"
+        },
+        {
+            "name": "Jeg Elementor Kit",
+            "version": "2.6.13",
+            "file": "jeg-elementor-kit/jeg-elementor-kit.php",
+            "author": "Jegtheme"
+        },
+        {
+            "name": "JetSticky For Elementor",
+            "version": "1.0.4",
+            "file": "jetsticky-for-elementor/jetsticky-for-elementor.php",
+            "author": "Crocoblock"
+        },
+        {
+            "name": "MetForm",
+            "version": "4.0.1",
+            "file": "metform/metform.php",
+            "author": "Wpmet"
+        },
+        {
+            "name": "WooCommerce",
+            "version": "9.9.5",
+            "file": "woocommerce/woocommerce.php",
+            "author": "Automattic"
+        },
+        {
+            "name": "Envato Elements",
+            "version": "2.0.16",
+            "file": "envato-elements/envato-elements.php",
+            "author": "Envato"
+        }
+    ],
+    "images": [
+        {
+            "filename": "360-CAMERA-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/360-CAMERA-1.png",
+            "templates": [
+                {
+                    "source": "templates/404.json",
+                    "name": "404"
+                }
+            ],
+            "filesize": 179544,
+            "dimensions": [
+                436,
+                436
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/virtual-reality-vr-3d-icon-pack-VSNRS4R"
+        },
+        {
+            "filename": "Subhero-Background.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Subhero-Background-800x164.png",
+            "templates": [
+                {
+                    "source": "templates/news.json",
+                    "name": "News"
+                },
+                {
+                    "source": "templates/testimonial.json",
+                    "name": "Testimonial"
+                },
+                {
+                    "source": "templates/faq.json",
+                    "name": "FAQ"
+                },
+                {
+                    "source": "templates/contact-us.json",
+                    "name": "Contact Us"
+                },
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                },
+                {
+                    "source": "templates/single-news.json",
+                    "name": "Single News"
+                },
+                {
+                    "source": "templates/product.json",
+                    "name": "Product"
+                },
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 87773,
+            "dimensions": [
+                1156,
+                237
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/gaming-controller-amidst-various-modern-devices-T4X3C7F"
+        },
+        {
+            "filename": "Subscribe-Background.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Subscribe-Background-800x267.png",
+            "templates": [
+                {
+                    "source": "templates/news.json",
+                    "name": "News"
+                },
+                {
+                    "source": "templates/testimonial.json",
+                    "name": "Testimonial"
+                },
+                {
+                    "source": "templates/faq.json",
+                    "name": "FAQ"
+                },
+                {
+                    "source": "templates/contact-us.json",
+                    "name": "Contact Us"
+                },
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                },
+                {
+                    "source": "templates/product.json",
+                    "name": "Product"
+                },
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                },
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 3826,
+            "dimensions": [
+                1156,
+                386
+            ],
+            "image_source": "self_created",
+            "image_urls": "#"
+        },
+        {
+            "filename": "Gear-3.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Gear-3.png",
+            "templates": [
+                {
+                    "source": "templates/news.json",
+                    "name": "News"
+                },
+                {
+                    "source": "templates/testimonial.json",
+                    "name": "Testimonial"
+                },
+                {
+                    "source": "templates/faq.json",
+                    "name": "FAQ"
+                },
+                {
+                    "source": "templates/contact-us.json",
+                    "name": "Contact Us"
+                },
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                },
+                {
+                    "source": "templates/product.json",
+                    "name": "Product"
+                },
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                },
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 216419,
+            "dimensions": [
+                463,
+                372
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/joystick-isolated-on-a-white-background-top-view-44PX8QJ"
+        },
+        {
+            "filename": "Testimoni-1-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Testimoni-1-1.png",
+            "templates": [
+                {
+                    "source": "templates/testimonial.json",
+                    "name": "Testimonial"
+                },
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 90934,
+            "dimensions": [
+                243,
+                295
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/im-in-the-mood-for-something-challenging-YPJM7AV"
+        },
+        {
+            "filename": "Testimoni-2-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Testimoni-2-1.png",
+            "templates": [
+                {
+                    "source": "templates/testimonial.json",
+                    "name": "Testimonial"
+                },
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 243510,
+            "dimensions": [
+                392,
+                475
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/arms-crossed-portrait-and-asian-man-courier-outdoo-4QST5D7"
+        },
+        {
+            "filename": "Testimoni-3-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Testimoni-3-1.png",
+            "templates": [
+                {
+                    "source": "templates/testimonial.json",
+                    "name": "Testimonial"
+                },
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 96443,
+            "dimensions": [
+                243,
+                295
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/i-choose-you-handsome-attractive-male-in-stylish-b-W4XP3YW"
+        },
+        {
+            "filename": "BG-Team-2.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/BG-Team-2.png",
+            "templates": [
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                }
+            ],
+            "filesize": 4636,
+            "dimensions": [
+                358,
+                502
+            ],
+            "image_source": "self_created",
+            "image_urls": "#"
+        },
+        {
+            "filename": "Team-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Team-1.png",
+            "templates": [
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                }
+            ],
+            "filesize": 130029,
+            "dimensions": [
+                306,
+                371
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/muscular-man-in-suit-showing-thumb-up-YRJCFYT"
+        },
+        {
+            "filename": "BG-Team-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/BG-Team-1.png",
+            "templates": [
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                }
+            ],
+            "filesize": 4672,
+            "dimensions": [
+                358,
+                502
+            ],
+            "image_source": "self_created",
+            "image_urls": "#"
+        },
+        {
+            "filename": "Team-2.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Team-2.png",
+            "templates": [
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                }
+            ],
+            "filesize": 111576,
+            "dimensions": [
+                306,
+                371
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/asian-businessman-QE2AYMU"
+        },
+        {
+            "filename": "Team-3.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Team-3.png",
+            "templates": [
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                }
+            ],
+            "filesize": 136771,
+            "dimensions": [
+                306,
+                371
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/a-man-in-a-business-suit-businessman-poses-against-6WWCNVN"
+        },
+        {
+            "filename": "Team-4.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Team-4.png",
+            "templates": [
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                }
+            ],
+            "filesize": 122945,
+            "dimensions": [
+                306,
+                371
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/portrait-of-happy-asian-man-wearing-suit-over-whit-83DZNLW"
+        },
+        {
+            "filename": "Team-5.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Team-5.png",
+            "templates": [
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                }
+            ],
+            "filesize": 130751,
+            "dimensions": [
+                306,
+                371
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/portrait-of-young-handsome-man-posing-in-studio-DQCVEY8"
+        },
+        {
+            "filename": "Team-6.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Team-6.png",
+            "templates": [
+                {
+                    "source": "templates/our-team.json",
+                    "name": "Our Team"
+                }
+            ],
+            "filesize": 131219,
+            "dimensions": [
+                306,
+                371
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/young-businessman-wearing-suit-over-white-backgrou-RDMWUAL"
+        },
+        {
+            "filename": "Single-Post-Photo.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Single-Post-Photo-800x314.png",
+            "templates": [
+                {
+                    "source": "templates/single-news.json",
+                    "name": "Single News"
+                }
+            ],
+            "filesize": 235441,
+            "dimensions": [
+                1156,
+                454
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/gaming-controller-amidst-various-modern-devices-T4X3C7F"
+        },
+        {
+            "filename": "Icon-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Icon-1.png",
+            "templates": [
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 2031,
+            "dimensions": [
+                80,
+                80
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/e-commerce-icon-set-4V9A3K3"
+        },
+        {
+            "filename": "Icon-2.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Icon-2.png",
+            "templates": [
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 1978,
+            "dimensions": [
+                80,
+                80
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/e-commerce-icon-set-4V9A3K3"
+        },
+        {
+            "filename": "Icon-3.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Icon-3.png",
+            "templates": [
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 2367,
+            "dimensions": [
+                80,
+                80
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/e-commerce-icon-set-4V9A3K3"
+        },
+        {
+            "filename": "Icon-4.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Icon-4.png",
+            "templates": [
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 2269,
+            "dimensions": [
+                80,
+                80
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/e-commerce-icon-set-4V9A3K3"
+        },
+        {
+            "filename": "Offer-Image.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Offer-Image.png",
+            "templates": [
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 96257,
+            "dimensions": [
+                364,
+                313
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/black-smart-sport-watch-isolated-GQ7Z7BT"
+        },
+        {
+            "filename": "Icon-5.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Icon-5.png",
+            "templates": [
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 2022,
+            "dimensions": [
+                80,
+                80
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/e-commerce-icon-set-4V9A3K3"
+        },
+        {
+            "filename": "Image-About-Us-2.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Image-About-Us-2.png",
+            "templates": [
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 61912,
+            "dimensions": [
+                203,
+                317
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/compact-camera-inside-a-backpack-black-and-white-7VD6TVM"
+        },
+        {
+            "filename": "Image-About-Us-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Image-About-Us-1.png",
+            "templates": [
+                {
+                    "source": "templates/services.json",
+                    "name": "Services"
+                },
+                {
+                    "source": "templates/about-us.json",
+                    "name": "About Us"
+                }
+            ],
+            "filesize": 172656,
+            "dimensions": [
+                439,
+                443
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/smartwatch-screen-mockup-digital-device-KR9TQ3G"
+        },
+        {
+            "filename": "Hero-BG-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Hero-BG-1-800x442.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 121661,
+            "dimensions": [
+                1300,
+                719
+            ],
+            "image_source": "self_created",
+            "image_urls": "#"
+        },
+        {
+            "filename": "Testimoni-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Testimoni-1.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 28563,
+            "dimensions": [
+                159,
+                159
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/he-brings-confidence-to-his-work-staff-DBFSHQR"
+        },
+        {
+            "filename": "Testimoni-3.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Testimoni-3.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 30796,
+            "dimensions": [
+                165,
+                159
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/full-length-of-businessman-with-hands-in-pocket-54HCPXE"
+        },
+        {
+            "filename": "Testimoni-2.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Testimoni-2.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 31214,
+            "dimensions": [
+                159,
+                159
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/portrait-of-success-DYDX3HG"
+        },
+        {
+            "filename": "Image-Hero.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Image-Hero.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 66209,
+            "dimensions": [
+                492,
+                643
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/person-holding-earbud-and-small-black-device-again-F3CYQRY"
+        },
+        {
+            "filename": "Gear.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Gear.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 11690,
+            "dimensions": [
+                98,
+                80
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/joystick-isolated-on-a-white-background-top-view-44PX8QJ"
+        },
+        {
+            "filename": "BG-Product-1.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/BG-Product-1.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 3200,
+            "dimensions": [
+                512,
+                254
+            ],
+            "image_source": "self_created",
+            "image_urls": "#"
+        },
+        {
+            "filename": "Vertical-BG.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Vertical-BG.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 3418,
+            "dimensions": [
+                254,
+                441
+            ],
+            "image_source": "self_created",
+            "image_urls": "#"
+        },
+        {
+            "filename": "Accessory.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Accessory.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 19831,
+            "dimensions": [
+                158,
+                223
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/black-smartphone-rear-view-innovative-future-techn-H28XDGL"
+        },
+        {
+            "filename": "BG-Product-2.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/BG-Product-2.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 3333,
+            "dimensions": [
+                619,
+                254
+            ],
+            "image_source": "self_created",
+            "image_urls": "#"
+        },
+        {
+            "filename": "Gear-2.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Gear-2.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 82255,
+            "dimensions": [
+                278,
+                237
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/joystick-isolated-on-a-white-background-top-view-44PX8QJ"
+        },
+        {
+            "filename": "Audio.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Audio.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 37221,
+            "dimensions": [
+                262,
+                228
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/black-headphones-WABX2VC"
+        },
+        {
+            "filename": "Tech.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Tech.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 40538,
+            "dimensions": [
+                167,
+                202
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/black-smart-sport-watch-isolated-GQ7Z7BT"
+        },
+        {
+            "filename": "Summer-Sale.png",
+            "thumbnail_url": "https://nvb.nirmanavisual.com/electromart/wp-content/uploads/sites/2/2025/07/Summer-Sale-800x313.png",
+            "templates": [
+                {
+                    "source": "templates/home.json",
+                    "name": "Home"
+                }
+            ],
+            "filesize": 214273,
+            "dimensions": [
+                1156,
+                453
+            ],
+            "image_source": "envato_elements",
+            "image_urls": "https://elements.envato.com/gaming-controller-amidst-various-modern-devices-T4X3C7F"
+        }
+    ]
+}
