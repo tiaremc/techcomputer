@@ -1146,8 +1146,10 @@ function tc_localize_url( $url ) {
 	if ( str_contains( $url, 'wa.me' ) ) {
 		return $url;
 	}
-	// No tocar URLs de imágenes externas (kit o medios).
-	if ( preg_match( '/\.(png|jpe?g|webp|gif|svg)(\?|$)/i', $url ) || str_contains( $url, '/uploads/' ) ) {
+	if ( str_contains( $url, '/wp-content/uploads/' ) ) {
+		return function_exists( 'tc_remap_legacy_media_url' ) ? tc_remap_legacy_media_url( $url ) : $url;
+	}
+	if ( preg_match( '/\.(png|jpe?g|webp|gif|svg)(\?|$)/i', $url ) ) {
 		return $url;
 	}
 	if ( str_contains( $url, 'nirmanavisual.com' ) ) {

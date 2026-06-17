@@ -88,6 +88,19 @@ function tc_admin_page() {
 		}
 		update_option( 'tc_setup_version', TC_SETUP_VERSION );
 		$result = array( 'refresh' => $updated );
+	} elseif ( isset( $_POST['tc_fix_migration_urls'] ) && check_admin_referer( 'tc_setup_action' ) ) {
+		if ( function_exists( 'tc_force_url_migration_fix' ) ) {
+			$fix    = tc_force_url_migration_fix();
+			$result = array(
+				'url_fix' => sprintf(
+					'Corregidas %d páginas Elementor y %d archivos CSS.',
+					(int) $fix['posts'],
+					(int) $fix['css']
+				),
+			);
+		} else {
+			$result = new WP_Error( 'no_fix', 'No se encontró el módulo de corrección de migración.' );
+		}
 	} elseif ( isset( $_POST['tc_create_landings'] ) && check_admin_referer( 'tc_setup_action' ) ) {
 		if ( function_exists( 'tc_ad_landing_reset_pages' ) ) {
 			tc_ad_landing_reset_pages();
@@ -123,6 +136,14 @@ function tc_admin_page() {
 			<div class="notice notice-success"><p>Contenido actualizado en <?php echo (int) $result['refresh']; ?> página(s).</p></div>
 		<?php elseif ( is_array( $result ) && ! empty( $result['landings'] ) ) : ?>
 			<div class="notice notice-success"><p><strong>Landing pages creadas o actualizadas.</strong> Revisa los enlaces abajo.</p></div>
+		<?php elseif ( is_array( $result ) && ! empty( $result['url_fix'] ) ) : ?>
+			<div class="notice notice-success"><p><strong><?php echo esc_html( $result['url_fix'] ); ?></strong> Recarga el sitio con Ctrl+F5.</p></div>
+		<?php endif; ?>
+
+		<?php if ( defined( 'WP_HOME' ) && str_contains( (string) WP_HOME, '.local' ) && ! str_contains( home_url(), '.local' ) ) : ?>
+			<div class="notice notice-error inline" style="margin:16px 0;max-width:760px">
+				<p><strong>wp-config.php incorrecto en producción:</strong> <code>WP_HOME</code> apunta a <code><?php echo esc_html( WP_HOME ); ?></code>. Debe ser <code>https://pt.restify.cl</code> o eliminar esas líneas.</p>
+			</div>
 		<?php endif; ?>
 
 		<table class="widefat" style="max-width:760px;margin:20px 0">
@@ -155,6 +176,12 @@ function tc_admin_page() {
 			<li>Aplica reseñas de Google (testimonios) y enlaces de botones</li>
 			<li>Crea menú de navegación</li>
 		</ul>
+
+		<form method="post" style="margin-bottom:16px">
+			<?php wp_nonce_field( 'tc_setup_action' ); ?>
+			<?php submit_button( 'Reparar URLs y CSS de Elementor (post-migración)', 'secondary', 'tc_fix_migration_urls', false ); ?>
+			<p class="description">Usa esto después de importar la base de datos: corrige enlaces de <code>techcomputerv3.local</code>, regenera el CSS del kit y limpia caché de Elementor.</p>
+		</form>
 
 		<form method="post" style="margin-bottom:16px">
 			<?php wp_nonce_field( 'tc_setup_action' ); ?>
