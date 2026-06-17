@@ -101,6 +101,13 @@ function tc_admin_page() {
 		} else {
 			$result = new WP_Error( 'no_fix', 'No se encontró el módulo de corrección de migración.' );
 		}
+	} elseif ( isset( $_POST['tc_rebuild_contact'] ) && check_admin_referer( 'tc_setup_action' ) ) {
+		if ( function_exists( 'tc_contact_page_force_rebuild' ) ) {
+			tc_contact_page_force_rebuild();
+			$result = array( 'contact_rebuild' => true );
+		} else {
+			$result = new WP_Error( 'no_contact', 'No se encontró el módulo de contacto.' );
+		}
 	} elseif ( isset( $_POST['tc_create_landings'] ) && check_admin_referer( 'tc_setup_action' ) ) {
 		if ( function_exists( 'tc_ad_landing_reset_pages' ) ) {
 			tc_ad_landing_reset_pages();
@@ -134,6 +141,8 @@ function tc_admin_page() {
 			</div>
 		<?php elseif ( is_array( $result ) && isset( $result['refresh'] ) ) : ?>
 			<div class="notice notice-success"><p>Contenido actualizado en <?php echo (int) $result['refresh']; ?> página(s).</p></div>
+		<?php elseif ( is_array( $result ) && ! empty( $result['contact_rebuild'] ) ) : ?>
+			<div class="notice notice-success"><p><strong>Página Contáctanos reconstruida.</strong> <a href="<?php echo esc_url( home_url( '/contactanos/' ) ); ?>" target="_blank">Ver página</a></p></div>
 		<?php elseif ( is_array( $result ) && ! empty( $result['landings'] ) ) : ?>
 			<div class="notice notice-success"><p><strong>Landing pages creadas o actualizadas.</strong> Revisa los enlaces abajo.</p></div>
 		<?php elseif ( is_array( $result ) && ! empty( $result['url_fix'] ) ) : ?>
@@ -176,6 +185,12 @@ function tc_admin_page() {
 			<li>Aplica reseñas de Google (testimonios) y enlaces de botones</li>
 			<li>Crea menú de navegación</li>
 		</ul>
+
+		<form method="post" style="margin-bottom:16px">
+			<?php wp_nonce_field( 'tc_setup_action' ); ?>
+			<?php submit_button( 'Reconstruir página Contáctanos', 'secondary', 'tc_rebuild_contact', false ); ?>
+			<p class="description">Reemplaza la página rota de Elementor por la versión completa con dirección, teléfono, horario y formulario.</p>
+		</form>
 
 		<form method="post" style="margin-bottom:16px">
 			<?php wp_nonce_field( 'tc_setup_action' ); ?>

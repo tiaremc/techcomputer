@@ -2004,6 +2004,9 @@ function tc_enqueue_contact_assets() {
 }
 
 function tc_render_contact_page_directions() {
+	if ( function_exists( 'tc_contact_page_is_active' ) && tc_contact_page_is_active() ) {
+		return;
+	}
 	if ( ! tc_is_contact_page() || ! function_exists( 'tc_render_directions_section' ) ) {
 		return;
 	}
