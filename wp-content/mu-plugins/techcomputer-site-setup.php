@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '38' );
+define( 'TC_SETUP_VERSION', '39' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -40,6 +40,11 @@ add_action( 'wp', 'tc_single_product_bootstrap' );
 add_filter( 'the_content', 'tc_append_directions_to_home', 99 );
 add_shortcode( 'tc_shop_catalog', 'tc_shop_catalog_shortcode' );
 add_shortcode( 'tc_contact_form', 'tc_contact_form_shortcode' );
+add_shortcode( 'tc_contact_form_panel', 'tc_contact_form_panel_shortcode' );
+add_shortcode( 'tc_contact_whatsapp_card', 'tc_contact_whatsapp_card_shortcode' );
+add_shortcode( 'tc_contact_breadcrumb', 'tc_contact_breadcrumb_shortcode' );
+add_action( 'wp_enqueue_scripts', 'tc_enqueue_contact_assets', 102 );
+add_action( 'wp_footer', 'tc_render_contact_page_directions', 18 );
 add_action( 'wp_footer', 'tc_render_whatsapp_float', 25 );
 add_action( 'admin_post_tc_contact_form', 'tc_handle_contact_form' );
 add_action( 'admin_post_nopriv_tc_contact_form', 'tc_handle_contact_form' );
@@ -184,6 +189,10 @@ function tc_maybe_runtime_sync() {
 	$home_id = tc_get_home_page_id();
 	if ( $home_id > 0 && 'builder' === get_post_meta( $home_id, '_elementor_edit_mode', true ) ) {
 		tc_persist_elementor_data( $home_id );
+	}
+	$contact_id = tc_get_contact_page_id();
+	if ( $contact_id > 0 && 'builder' === get_post_meta( $contact_id, '_elementor_edit_mode', true ) ) {
+		tc_persist_elementor_data( $contact_id );
 	}
 	tc_clear_elementor_files_cache();
 	update_option( 'tc_setup_version', TC_SETUP_VERSION, false );
@@ -1812,20 +1821,59 @@ function tc_transform_contact_page_elements( $elements ) {
 	$elements = tc_remove_elements_by_id(
 		$elements,
 		array(
-			'36274f1',   // Caja "Have an Idea" + metform duplicado.
-			'14bbb665',  // Redes sociales en columna de info.
-			'68484bea',  // Metform extra en bloque WhatsApp.
+			'36274f1',  // Formulario duplicado "Have an Idea".
 		)
 	);
 
-	return tc_replace_widget_by_id(
+	$elements = tc_replace_widget_by_id(
+		$elements,
+		'14bbb665',
+		array(
+			'id'         => '14bbb665',
+			'elType'     => 'widget',
+			'widgetType' => 'shortcode',
+			'settings'   => array( 'shortcode' => '[tc_contact_whatsapp_card]' ),
+			'elements'   => array(),
+			'isInner'    => false,
+		)
+	);
+
+	$elements = tc_replace_widget_by_id(
 		$elements,
 		'239ef11a',
 		array(
 			'id'         => '239ef11a',
 			'elType'     => 'widget',
 			'widgetType' => 'shortcode',
-			'settings'   => array( 'shortcode' => '[tc_contact_form]' ),
+			'settings'   => array( 'shortcode' => '[tc_contact_form_panel]' ),
+			'elements'   => array(),
+			'isInner'    => false,
+		)
+	);
+
+	$elements = tc_replace_widget_by_id(
+		$elements,
+		'68484bea',
+		array(
+			'id'         => '68484bea',
+			'elType'     => 'widget',
+			'widgetType' => 'shortcode',
+			'settings'   => array(
+				'shortcode' => '[tc_contact_whatsapp_card style="banner"]',
+			),
+			'elements'   => array(),
+			'isInner'    => false,
+		)
+	);
+
+	return tc_replace_widget_by_id(
+		$elements,
+		'5b4d0c0d',
+		array(
+			'id'         => '5b4d0c0d',
+			'elType'     => 'widget',
+			'widgetType' => 'shortcode',
+			'settings'   => array( 'shortcode' => '[tc_contact_breadcrumb]' ),
 			'elements'   => array(),
 			'isInner'    => false,
 		)
@@ -1837,14 +1885,17 @@ function tc_apply_contact_image_box( $element ) {
 		'1f14c091' => array(
 			'title' => 'Dirección',
 			'desc'  => TC_ADDRESS,
+			'icon'  => 'fas fa-map-marker-alt',
 		),
 		'5f316331' => array(
 			'title' => 'Celular',
 			'desc'  => TC_PHONE . "\n" . TC_EMAIL,
+			'icon'  => 'fas fa-phone-alt',
 		),
 		'707df359' => array(
 			'title' => 'Horario de atención',
 			'desc'  => TC_HOURS,
+			'icon'  => 'far fa-clock',
 		),
 	);
 
@@ -1855,8 +1906,110 @@ function tc_apply_contact_image_box( $element ) {
 
 	$element['settings']['title_text']       = $map[ $id ]['title'];
 	$element['settings']['description_text'] = $map[ $id ]['desc'];
+	$element['settings']['selected_icon']    = array(
+		'value'   => $map[ $id ]['icon'],
+		'library' => str_starts_with( $map[ $id ]['icon'], 'far ' ) ? 'fa-regular' : 'fa-solid',
+	);
+	$element['settings']['position']         = 'left';
+	$element['settings']['title_size']       = 'h4';
+	$element['settings']['_css_classes']     = trim( ( $element['settings']['_css_classes'] ?? '' ) . ' tc-contact-info-box' );
 
 	return $element;
+}
+
+function tc_is_contact_page() {
+	return is_page() && tc_get_contact_page_id() === get_queried_object_id();
+}
+
+function tc_contact_breadcrumb_shortcode() {
+	ob_start();
+	?>
+	<nav class="tc-contact-breadcrumb" aria-label="<?php esc_attr_e( 'Breadcrumb', 'techcomputer' ); ?>">
+		<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'techcomputer' ); ?></a>
+		<span aria-hidden="true"> / </span>
+		<span><?php esc_html_e( 'Contáctanos', 'techcomputer' ); ?></span>
+	</nav>
+	<?php
+	return ob_get_clean();
+}
+
+function tc_contact_form_panel_shortcode() {
+	ob_start();
+	?>
+	<div class="tc-contact-form-panel">
+		<h3 class="tc-contact-form-panel__title"><?php esc_html_e( 'Contáctanos', 'techcomputer' ); ?></h3>
+		<?php echo tc_contact_form_shortcode(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+function tc_contact_whatsapp_card_shortcode( $atts = array() ) {
+	$atts = shortcode_atts(
+		array(
+			'style' => 'card',
+		),
+		$atts,
+		'tc_contact_whatsapp_card'
+	);
+
+	$is_banner = ( 'banner' === $atts['style'] );
+	$class     = $is_banner ? 'tc-contact-wa-card tc-contact-wa-card--banner' : 'tc-contact-wa-card';
+
+	ob_start();
+	?>
+	<div class="<?php echo esc_attr( $class ); ?>">
+		<div class="tc-contact-wa-card__icon" aria-hidden="true">
+			<svg viewBox="0 0 32 32" focusable="false"><path d="M16.01 3C9.39 3 4 8.28 4 14.78c0 2.07.58 4.1 1.68 5.87L4 29l8.58-1.62A12.9 12.9 0 0 0 16.02 27C22.63 27 28 21.72 28 15.22 27.99 8.72 22.62 3 16.01 3Zm0 23.13c-1.66 0-3.29-.44-4.72-1.28l-.34-.2-5.09 1.06 1.08-4.9-.22-.35a9.86 9.86 0 0 1-1.52-5.28C5.2 9.9 10.07 5.2 16.01 5.2c5.93 0 10.79 4.7 10.79 10.48 0 5.78-4.86 10.48-10.79 10.48Zm5.92-7.84c-.32-.16-1.9-.94-2.2-1.05-.3-.1-.52-.16-.74.16-.22.32-.85 1.05-1.04 1.27-.19.22-.39.24-.71.08-.32-.16-1.36-.5-2.59-1.6-.96-.85-1.6-1.9-1.79-2.22-.19-.32-.02-.5.14-.66.14-.14.32-.39.48-.58.16-.19.22-.32.32-.54.1-.22.05-.4-.03-.58-.08-.16-.74-1.78-1.01-2.44-.27-.64-.54-.55-.74-.56h-.63c-.22 0-.58.08-.88.4-.3.32-1.15 1.12-1.15 2.74 0 1.62 1.18 3.18 1.34 3.4.16.22 2.32 3.54 5.62 4.96.79.34 1.4.54 1.88.69.79.25 1.51.22 2.08.13.63-.1 1.9-.78 2.17-1.53.27-.75.27-1.39.19-1.53-.08-.14-.3-.22-.62-.38Z"/></svg>
+		</div>
+		<div class="tc-contact-wa-card__body">
+			<p class="tc-contact-wa-card__label">WhatsApp</p>
+			<p class="tc-contact-wa-card__phone"><?php echo esc_html( TC_PHONE ); ?></p>
+			<a class="tc-contact-wa-card__link" href="<?php echo esc_url( TC_WHATSAPP ); ?>" target="_blank" rel="noopener noreferrer">
+				<?php esc_html_e( 'Escríbenos', 'techcomputer' ); ?>
+			</a>
+		</div>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+function tc_enqueue_contact_assets() {
+	if ( ! tc_is_contact_page() ) {
+		return;
+	}
+
+	$p = tc_brand_palette();
+	$css = '
+.tc-contact-breadcrumb{text-align:center;margin:0 0 8px;font-size:.95rem;color:#64748b}
+.tc-contact-breadcrumb a{color:' . $p['primary'] . ';text-decoration:none;font-weight:600}
+.tc-contact-breadcrumb a:hover{text-decoration:underline}
+.tc-contact-info-box .elementor-image-box-title{font-size:1.05rem;margin-bottom:8px;color:' . $p['dark'] . '}
+.tc-contact-info-box .elementor-image-box-description{white-space:pre-line;line-height:1.6}
+.tc-contact-form-panel__title{margin:0 0 18px;font-size:1.5rem;color:' . $p['dark'] . '}
+.tc-contact-wa-card{display:flex;align-items:center;gap:16px;padding:18px 22px;border:1px solid ' . $p['primary'] . ';border-radius:20px;background:' . $p['tint'] . '}
+.tc-contact-wa-card__icon{width:52px;height:52px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.tc-contact-wa-card__icon svg{width:28px;height:28px;fill:currentColor}
+.tc-contact-wa-card__label{margin:0 0 4px;font-weight:700;color:' . $p['dark'] . ';font-size:.9rem}
+.tc-contact-wa-card__phone{margin:0 0 8px;font-size:1.1rem;font-weight:700;color:' . $p['dark'] . '}
+.tc-contact-wa-card__link{display:inline-flex;font-weight:700;color:' . $p['primary'] . '!important;text-decoration:none}
+.tc-contact-wa-card__link:hover{text-decoration:underline}
+.tc-contact-wa-card--banner{justify-content:center;text-align:left;max-width:420px;margin:0 auto}
+.tc-contact-directions-wrap{max-width:1140px;margin:0 auto;padding:20px}
+@media(max-width:767px){.tc-contact-wa-card{flex-direction:column;text-align:center}}
+';
+	wp_register_style( 'tc-contact-page', false, array( 'tc-brand-colors' ), TC_SETUP_VERSION );
+	wp_enqueue_style( 'tc-contact-page' );
+	wp_add_inline_style( 'tc-contact-page', $css );
+}
+
+function tc_render_contact_page_directions() {
+	if ( ! tc_is_contact_page() || ! function_exists( 'tc_render_directions_section' ) ) {
+		return;
+	}
+	echo '<div class="tc-contact-directions-wrap">';
+	tc_render_directions_section();
+	echo '</div>';
 }
 
 function tc_apply_header_icon_settings( $element ) {
