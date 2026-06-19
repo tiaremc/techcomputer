@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '43' );
+define( 'TC_SETUP_VERSION', '44' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -36,6 +36,7 @@ add_action( 'wp_enqueue_scripts', 'tc_enqueue_directions_assets', 100 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_shop_catalog_assets', 101 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_single_product_assets', 102 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_home_responsive_assets', 9999 );
+add_action( 'wp_enqueue_scripts', 'tc_enqueue_header_mobile_fix', 99999 );
 add_action( 'wp', 'tc_single_product_bootstrap' );
 add_filter( 'the_content', 'tc_append_directions_to_home', 99 );
 add_shortcode( 'tc_shop_catalog', 'tc_shop_catalog_shortcode' );
@@ -824,6 +825,126 @@ function tc_normalize_brand_settings( &$settings ) {
 	unset( $value );
 }
 
+/**
+ * CSS de header móvil (carga al final para ganar a Elementor).
+ */
+function tc_header_mobile_css() {
+	return '
+@media(max-width:1024px){
+body .elementor-location-header .elementor-element-2f89bce4,
+body .elementor-location-header .elementor-element-2f89bce4.e-con,
+body .elementor-location-header .elementor-element.tc-header-shell{padding:12px 16px!important}
+body .elementor-location-header .elementor-element-2f89bce4,
+body .elementor-location-header .elementor-element-2f89bce4>.e-con-inner,
+body .elementor-location-header .elementor-element.tc-header-shell,
+body .elementor-location-header .elementor-element.tc-header-shell>.e-con-inner{
+display:grid!important;
+grid-template-columns:minmax(0,1fr) auto auto!important;
+grid-template-areas:"logo actions nav"!important;
+align-items:center!important;
+column-gap:10px!important;
+row-gap:0!important;
+width:100%!important;
+max-width:100%!important;
+flex-direction:row!important;
+flex-wrap:nowrap!important;
+}
+body .elementor-location-header .elementor-element-3e5e84b8,
+body .elementor-location-header .elementor-element.tc-header-logo,
+body .elementor-location-header .elementor-element-2f89bce4 .elementor-element-3e5e84b8,
+body .elementor-location-header .elementor-element-2f89bce4 .elementor-element.tc-header-logo{
+grid-area:logo!important;
+width:auto!important;max-width:100%!important;min-width:0!important;
+justify-self:start!important;align-self:center!important;margin:0!important;
+}
+body .elementor-location-header .elementor-element-128e2831,
+body .elementor-location-header .elementor-element.tc-header-actions,
+body .elementor-location-header .elementor-element-2f89bce4 .elementor-element-128e2831,
+body .elementor-location-header .elementor-element-2f89bce4 .elementor-element.tc-header-actions{
+grid-area:actions!important;
+width:auto!important;max-width:none!important;min-width:0!important;
+justify-self:end!important;align-self:center!important;margin:0!important;
+}
+body .elementor-location-header .elementor-element-2dbc6304,
+body .elementor-location-header .elementor-element.tc-header-nav,
+body .elementor-location-header .elementor-element-2f89bce4 .elementor-element-2dbc6304,
+body .elementor-location-header .elementor-element-2f89bce4 .elementor-element.tc-header-nav{
+grid-area:nav!important;
+width:auto!important;max-width:none!important;min-width:0!important;
+justify-self:end!important;align-self:center!important;margin:0!important;
+}
+body .elementor-location-header .elementor-element-128e2831 .e-con-inner,
+body .elementor-location-header .elementor-element.tc-header-actions .e-con-inner,
+body .elementor-location-header .elementor-element-128e2831 .elementor-widget-wrap{
+display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+align-items:center!important;justify-content:flex-end!important;gap:8px!important;
+width:auto!important;max-width:none!important;
+}
+body .elementor-location-header .elementor-element-2dbc6304 .elementor-widget-container,
+body .elementor-location-header .elementor-element-2dbc6304 .hfe-nav-menu__layout-horizontal,
+body .elementor-location-header .elementor-element.tc-header-nav .elementor-widget-container{
+width:auto!important;max-width:none!important;display:flex!important;
+justify-content:flex-end!important;align-items:center!important;
+}
+body .elementor-location-header .elementor-element-2dbc6304 .hfe-nav-menu__layout-horizontal .hfe-nav-menu{
+display:none!important;
+}
+body .elementor-location-header .elementor-element-2dbc6304 .hfe-nav-menu__toggle,
+body .elementor-location-header .elementor-element.tc-header-nav .hfe-nav-menu__toggle{
+display:inline-flex!important;align-items:center!important;justify-content:center!important;
+margin:0!important;padding:0!important;width:auto!important;
+}
+body .elementor-location-header .elementor-widget-image.tc-header-logo img,
+body .elementor-location-header .tc-header-logo img{max-width:132px!important;max-height:40px!important}
+body .elementor-location-header .hfe-menu-cart__toggle .elementor-button-icon{font-size:24px!important}
+}
+@media(max-width:1024px){
+.elementor-element-2f89bce4,
+.elementor-element-2f89bce4>.e-con-inner,
+.elementor-element.tc-header-shell,
+.elementor-element.tc-header-shell>.e-con-inner{
+display:grid!important;
+grid-template-columns:minmax(0,1fr) auto auto!important;
+grid-template-areas:"logo actions nav"!important;
+align-items:center!important;
+column-gap:10px!important;
+width:100%!important;
+flex-direction:row!important;
+flex-wrap:nowrap!important;
+}
+.elementor-element-3e5e84b8,.elementor-element.tc-header-logo{grid-area:logo!important;width:auto!important;max-width:100%!important;justify-self:start!important;margin:0!important}
+.elementor-element-128e2831,.elementor-element.tc-header-actions{grid-area:actions!important;width:auto!important;justify-self:end!important;margin:0!important}
+.elementor-element-2dbc6304,.elementor-element.tc-header-nav{grid-area:nav!important;width:auto!important;justify-self:end!important;margin:0!important}
+.elementor-element-128e2831 .e-con-inner,.elementor-element.tc-header-actions .e-con-inner{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;width:auto!important}
+.elementor-element-2dbc6304 .hfe-nav-menu__layout-horizontal .hfe-nav-menu{display:none!important}
+.elementor-element-2dbc6304 .hfe-nav-menu__toggle{display:inline-flex!important}
+}';
+}
+
+function tc_enqueue_header_mobile_fix() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$deps = array( 'tc-brand-colors' );
+	if ( wp_style_is( 'elementor-frontend', 'registered' ) ) {
+		$deps[] = 'elementor-frontend';
+	}
+	if ( function_exists( 'get_hfe_header_id' ) ) {
+		$header_id = (int) get_hfe_header_id();
+		if ( $header_id > 0 ) {
+			$handle = 'elementor-post-' . $header_id;
+			if ( wp_style_is( $handle, 'registered' ) ) {
+				$deps[] = $handle;
+			}
+		}
+	}
+
+	wp_register_style( 'tc-header-mobile-fix', false, $deps, TC_SETUP_VERSION );
+	wp_enqueue_style( 'tc-header-mobile-fix' );
+	wp_add_inline_style( 'tc-header-mobile-fix', tc_header_mobile_css() );
+}
+
 function tc_enqueue_brand_styles() {
 	$p = tc_brand_palette();
 	$css = ':root{--tc-primary:' . $p['primary'] . ';--tc-primary-dark:' . $p['primary_d'] . ';--tc-blue:' . $p['blue'] . ';--tc-blue-dark:' . $p['blue_d'] . ';--tc-dark:' . $p['dark'] . ';--tc-body:' . $p['body'] . '}
@@ -853,23 +974,7 @@ a:hover,a:focus{color:' . $p['primary_d'] . '}
 .elementor-element.tc-header-nav .hfe-nav-menu__layout-horizontal .hfe-nav-menu{justify-content:flex-end}
 }
 @media(max-width:1024px){
-.elementor-element.tc-header-shell,.elementor-element-2f89bce4{flex-wrap:nowrap!important;justify-content:flex-start!important;padding:14px 18px!important;align-items:center!important}
-.elementor-element.tc-header-shell>.elementor-element-3e5e84b8,.elementor-element.tc-header-shell>.elementor-element.tc-header-logo,.elementor-element-2f89bce4>.elementor-element-3e5e84b8,.elementor-element-2f89bce4 .elementor-element.tc-header-logo{order:1!important;margin-right:auto!important;flex:0 1 auto!important;width:auto!important;max-width:50%!important}
-.elementor-element.tc-header-shell>.elementor-element-128e2831,.elementor-element.tc-header-shell>.tc-header-actions,.elementor-element-2f89bce4>.elementor-element-128e2831,.elementor-element-2f89bce4>.tc-header-actions{order:2;width:auto!important;max-width:none!important;flex:0 0 auto!important;margin-left:0!important}
-.elementor-element.tc-header-shell>.elementor-element-2dbc6304,.elementor-element.tc-header-shell>.tc-header-nav,.elementor-element-2f89bce4>.elementor-element-2dbc6304,.elementor-element-2f89bce4>.tc-header-nav{order:3;flex:0 0 auto!important;width:auto!important;max-width:none!important;margin:0 0 0 8px!important}
 .elementor-element.tc-header-nav .hfe-nav-menu__layout-horizontal .hfe-nav-menu>li>a{padding:6px 10px!important;font-size:13px!important}
-}
-@media(max-width:767px){
-.elementor-element.tc-header-shell,.elementor-element-2f89bce4,.elementor-element-2f89bce4>.e-con-inner{display:flex!important;flex-wrap:nowrap!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;padding:10px 14px!important;gap:8px!important;width:100%!important;max-width:100%!important}
-.elementor-element.tc-header-shell>.elementor-element-3e5e84b8,.elementor-element.tc-header-shell>.elementor-element.tc-header-logo,.elementor-element-2f89bce4>.elementor-element-3e5e84b8,.elementor-element-2f89bce4 .elementor-element.tc-header-logo{order:1!important;width:auto!important;max-width:48%!important;flex:0 1 auto!important;min-width:0!important;justify-content:flex-start!important;margin:0 auto 0 0!important}
-.elementor-element.tc-header-shell>.elementor-element-128e2831,.elementor-element.tc-header-shell>.tc-header-actions,.elementor-element-2f89bce4>.elementor-element-128e2831,.elementor-element-2f89bce4>.tc-header-actions{order:2!important;width:auto!important;max-width:none!important;flex:0 0 auto!important;justify-content:flex-end!important;margin:0 0 0 auto!important}
-.elementor-element.tc-header-shell>.elementor-element-2dbc6304,.elementor-element.tc-header-shell>.tc-header-nav,.elementor-element-2f89bce4>.elementor-element-2dbc6304,.elementor-element-2f89bce4>.tc-header-nav{order:3!important;width:auto!important;max-width:none!important;flex:0 0 auto!important;margin:0!important}
-.elementor-widget-image.tc-header-logo img,.tc-header-logo img{max-width:128px!important;max-height:38px!important}
-.elementor-element.tc-header-nav .hfe-nav-menu__toggle,.elementor-element-2dbc6304 .hfe-nav-menu__toggle{margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
-.elementor-element.tc-header-actions .elementor-widget-wrap,.elementor-element.tc-header-actions .e-con-inner,.elementor-element-128e2831 .e-con-inner{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important;width:auto!important;flex-wrap:nowrap!important}
-.elementor-element.tc-header-actions .elementor-widget,.elementor-element-128e2831 .elementor-widget{width:auto!important;max-width:none!important;margin:0!important}
-.elementor-element.tc-header-actions .elementor-icon,.elementor-element-128e2831 .elementor-icon{font-size:22px!important}
-.hfe-menu-cart__toggle .elementor-button-icon{font-size:24px!important}
 }
 .tc-wa-float{position:fixed;right:22px;bottom:22px;z-index:99999;width:58px;height:58px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(0,0,0,.22);transition:transform .2s ease,box-shadow .2s ease;text-decoration:none}
 .tc-wa-float:hover{transform:scale(1.06);box-shadow:0 14px 34px rgba(0,0,0,.28);color:#fff}
@@ -2057,7 +2162,9 @@ function tc_apply_header_container_element( $element, $context ) {
 	$element['settings']['flex_align_items']       = 'center';
 	$element['settings']['flex_align_items_tablet'] = 'center';
 	$element['settings']['flex_align_items_mobile'] = 'center';
+	$element['settings']['flex_direction_tablet']  = 'row';
 	$element['settings']['flex_direction_mobile']  = 'row';
+	$element['settings']['flex_justify_content_tablet'] = 'flex-start';
 	$element['settings']['flex_justify_content_mobile'] = 'flex-start';
 	$element['settings']['flex_gap_mobile']        = array(
 		'unit'  => 'px',
