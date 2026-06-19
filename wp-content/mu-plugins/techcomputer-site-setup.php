@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '58' );
+define( 'TC_SETUP_VERSION', '59' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -966,6 +966,18 @@ flex:0 0 auto!important;
 width:auto!important;
 margin:0!important;
 padding:0!important;
+position:relative!important;
+z-index:100010!important;
+pointer-events:auto!important;
+}
+{$scope} .tc-header-mobile-right>:is({$action_ids}) .hfe-menu-cart__toggle,
+{$scope} .tc-header-mobile-right>:is({$action_ids}) .hfe-cart-container,
+{$scope} :is({$action_ids}) .hfe-menu-cart__toggle,
+{$scope} :is({$action_ids}) .hfe-cart-container{
+pointer-events:auto!important;
+cursor:pointer!important;
+position:relative!important;
+z-index:100011!important;
 }
 {$scope} .tc-header-mobile-right>:is({$nav_ids}){
 flex:0 0 auto!important;
@@ -1002,6 +1014,11 @@ z-index:-1!important;
 {$scope} :is({$nav_ids}) .hfe-nav-menu-layout.horizontal,
 {$scope} :is({$nav_ids}) .hfe-nav-menu-layout{
 position:relative!important;
+pointer-events:none!important;
+}
+{$scope} :is({$nav_ids}) .hfe-nav-menu__toggle,
+{$scope} :is({$nav_ids}) .hfe-nav-menu__toggle.hfe-active-menu+.hfe-nav-menu__layout-horizontal{
+pointer-events:auto!important;
 }
 {$scope} :is({$nav_ids}) .hfe-nav-menu__toggle.hfe-active-menu+.hfe-nav-menu__layout-horizontal{
 display:block!important;
@@ -1195,7 +1212,7 @@ function tcFixHeaderMobile(){
 		toggle.style.opacity='1';
 	}
 	var subtotal=actions.querySelector('.hfe-subtotal');
-	if(subtotal){subtotal.style.display='none';}
+	if(subtotal){subtotal.style.removeProperty('display');}
 	tcInitMobileMenu(nav);
 	if(toggle&&toggle.classList.contains('hfe-active-menu')){
 		var menu=nav.querySelector('nav.hfe-nav-menu__layout-horizontal');
@@ -1204,6 +1221,7 @@ function tcFixHeaderMobile(){
 }
 document.addEventListener('click',function(e){
 	if(window.innerWidth>1024){return;}
+	if(e.target.closest('.hfe-cart-container,.tc-header-actions,.hfe-menu-cart__toggle')){return;}
 	var nav=document.querySelector('.elementor-{$header_id} .elementor-element-41cdefe5,.elementor-{$header_id} .elementor-element-2dbc6304');
 	if(!nav||nav.contains(e.target)){return;}
 	var toggle=nav.querySelector('.hfe-nav-menu__toggle');
@@ -1262,7 +1280,8 @@ a:hover,a:focus{color:' . $p['primary_d'] . '}
 .hfe-menu-cart__toggle .elementor-button.hfe-cart-container,.hfe-menu-cart__toggle .elementor-button.hfe-cart-container:hover,.hfe-menu-cart__toggle .elementor-button.hfe-cart-container:focus{background:transparent!important;border:0!important;box-shadow:none!important;padding:6px 8px!important;min-height:0!important;line-height:1!important;color:' . $p['primary'] . '!important}
 .hfe-menu-cart__toggle .elementor-button-icon{color:' . $p['primary'] . '!important;font-size:28px!important;line-height:1!important}
 .hfe-menu-cart__toggle .elementor-button-icon .eicon:before{color:' . $p['primary'] . '!important}
-.hfe-menu-cart--items-indicator-bubble .hfe-menu-cart__toggle .elementor-button-icon[data-counter]:before{background-color:' . $p['primary'] . '!important;color:#fff!important;min-width:18px!important;height:18px!important;line-height:18px!important;font-size:11px!important;font-weight:700!important;top:-6px!important;right:-8px!important}
+.hfe-menu-cart__toggle,.hfe-menu-cart__toggle .hfe-cart-container,.hfe-menu-cart__toggle .elementor-button-icon{pointer-events:auto!important;cursor:pointer!important;position:relative!important;z-index:100011!important}
+.hfe-menu-cart--items-indicator-bubble .hfe-menu-cart__toggle .elementor-button-icon[data-counter]:before{background-color:' . $p['primary'] . '!important;color:#fff!important;min-width:18px!important;height:18px!important;line-height:18px!important;font-size:11px!important;font-weight:700!important;top:-6px!important;right:-8px!important;pointer-events:none!important}
 .hfe-cart-menu-wrap-default .hfe-cart-count,.hfe-cart-menu-wrap-default .hfe-cart-count:after{background-color:' . $p['primary'] . '!important;border-color:' . $p['primary'] . '!important;color:#fff!important}
 .woocommerce span.onsale{background-color:' . $p['primary'] . '!important}
 .woocommerce-info,.woocommerce-message{border-top-color:' . $p['primary'] . '!important}
@@ -1276,7 +1295,13 @@ a:hover,a:focus{color:' . $p['primary_d'] . '}
 .elementor-element.tc-header-shell>.e-con-inner>.elementor-element-2dbc6304,.elementor-element.tc-header-shell>.e-con-inner>.elementor-element-41cdefe5,.elementor-element.tc-header-shell>.e-con-inner>.tc-header-nav{flex:1 1 auto!important;order:2!important;width:auto!important;max-width:none!important;min-width:0!important}
 .elementor-element.tc-header-shell>.e-con-inner>.elementor-element-128e2831,.elementor-element.tc-header-shell>.e-con-inner>.elementor-element-1a7aa264,.elementor-element.tc-header-shell>.e-con-inner>.tc-header-actions{flex:0 0 auto!important;order:3!important;margin-left:0!important}
 @media(min-width:1025px){
-.elementor-element.tc-header-shell>.e-con-inner>.tc-header-mobile-right{display:contents!important}
+.elementor-element.tc-header-shell>.e-con-inner>.tc-header-actions,
+.elementor-element.tc-header-shell>.e-con-inner>.elementor-element-128e2831,
+.elementor-element.tc-header-shell>.e-con-inner>.elementor-element-1a7aa264{
+position:relative!important;
+z-index:100010!important;
+pointer-events:auto!important;
+}
 .elementor-element.tc-header-nav .hfe-nav-menu__toggle{display:none!important}
 .elementor-element.tc-header-nav .hfe-nav-menu__layout-horizontal{display:block!important;visibility:visible!important;height:auto!important;opacity:1!important;position:static!important}
 .elementor-element.tc-header-nav .hfe-nav-menu__layout-horizontal .hfe-nav-menu{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-end!important;gap:0}
@@ -2584,8 +2609,8 @@ function tc_apply_header_actions_element( $element, $context ) {
 	}
 
 	$element['settings']['width'] = array(
-		'unit'  => '%',
-		'size'  => 7,
+		'unit'  => 'custom',
+		'size'  => 'auto',
 		'sizes' => array(),
 	);
 	$element['settings']['width_tablet'] = array(
