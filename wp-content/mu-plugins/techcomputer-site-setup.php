@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '60' );
+define( 'TC_SETUP_VERSION', '61' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -53,6 +53,7 @@ add_action( 'admin_post_nopriv_tc_contact_form', 'tc_handle_contact_form' );
 add_filter( 'gettext', 'tc_localize_woocommerce_gettext', 20, 3 );
 add_filter( 'woocommerce_page_title', 'tc_localize_woocommerce_page_title' );
 add_filter( 'document_title_parts', 'tc_localize_cart_document_title' );
+add_filter( 'render_block', 'tc_render_classic_woocommerce_cart', 10, 2 );
 
 function tc_disable_hello_header_when_hfe( $show ) {
 	if ( function_exists( 'hfe_header_enabled' ) && ( hfe_header_enabled() || hfe_footer_enabled() ) ) {
@@ -190,6 +191,7 @@ function tc_maybe_runtime_sync() {
 	if ( function_exists( 'wc_get_product' ) ) {
 		tc_ensure_featured_service_products();
 		tc_localize_woocommerce_pages();
+		tc_use_classic_woocommerce_cart_page();
 	}
 
 	$home_id = tc_get_home_page_id();
@@ -3413,6 +3415,62 @@ function tc_localize_woocommerce_pages() {
 			)
 		);
 	}
+}
+
+/**
+ * Sustituye el bloque React de carrito (se queda en skeleton en prod) por el shortcode clásico.
+ *
+ * @param string               $block_content Contenido renderizado del bloque.
+ * @param array<string, mixed> $block         Definición del bloque.
+ * @return string
+ */
+function tc_render_classic_woocommerce_cart( $block_content, $block ) {
+	if ( empty( $block['blockName'] ) || 'woocommerce/cart' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	ob_start();
+	if ( function_exists( 'woocommerce_output_all_notices' ) ) {
+		woocommerce_output_all_notices();
+	}
+	echo do_shortcode( '[woocommerce_cart]' );
+
+	return (string) ob_get_clean();
+}
+
+/**
+ * Persiste carrito clásico en la página de WooCommerce (evita bloque is-loading en producción).
+ */
+function tc_use_classic_woocommerce_cart_page() {
+	if ( ! function_exists( 'wc_get_page_id' ) ) {
+		return;
+	}
+
+	$cart_id = (int) wc_get_page_id( 'cart' );
+	if ( $cart_id <= 0 ) {
+		return;
+	}
+
+	$page = get_post( $cart_id );
+	if ( ! $page instanceof WP_Post ) {
+		return;
+	}
+
+	$classic = "<!-- wp:shortcode -->\n[woocommerce_cart]\n<!-- /wp:shortcode -->";
+	if ( str_contains( $page->post_content, '[woocommerce_cart]' ) && ! str_contains( $page->post_content, 'woocommerce/cart' ) ) {
+		return;
+	}
+
+	if ( ! str_contains( $page->post_content, 'woocommerce/cart' ) && ! str_contains( $page->post_content, 'wp-block-woocommerce-cart' ) ) {
+		return;
+	}
+
+	wp_update_post(
+		array(
+			'ID'           => $cart_id,
+			'post_content' => $classic,
+		)
+	);
 }
 
 function tc_localize_woocommerce_gettext( $translated, $text, $domain ) {
