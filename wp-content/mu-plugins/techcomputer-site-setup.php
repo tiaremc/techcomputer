@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '57' );
+define( 'TC_SETUP_VERSION', '58' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -2917,7 +2917,15 @@ function tc_apply_home_element_settings( $element, $context ) {
  * @return string[]
  */
 function tc_home_removed_element_ids() {
-	return array( '2657010a', '5d582024', '373b3f08', '5291a5ef', '944ad80' );
+	return array(
+		'2657010a',
+		'5d582024',
+		'373b3f08',
+		'5291a5ef',
+		'944ad80',
+		'4ad1c57d',
+		'431cd7e',
+	);
 }
 
 function tc_home_removed_element_css( $scope = '' ) {
@@ -4603,7 +4611,7 @@ function tc_shared_hero_mobile_css() {
 .elementor-element-407266c8,.elementor-element-59b638bf{width:100%!important;justify-content:center!important;align-items:center!important;gap:10px!important;margin:0 auto 10px!important;padding:0 12px!important}
 .elementor-element-407266c8 .elementor-button,.elementor-element-59b638bf .elementor-button{width:100%!important;max-width:280px!important;min-width:0!important;padding:13px 22px!important;font-size:.92rem!important;border-radius:999px!important;box-shadow:0 8px 20px rgba(82,138,49,.22)!important}
 .elementor-element-407266c8 .elementor-button-wrapper,.elementor-element-59b638bf .elementor-button-wrapper{width:100%!important;display:flex!important;justify-content:center!important}
-.elementor-element-373b3f08,.elementor-element-5291a5ef,.elementor-element-944ad80,.elementor-element-2657010a,.elementor-element-5d582024{display:none!important}
+' . tc_home_removed_element_css() . '
 .elementor-element-2579d2ba{margin-top:4px!important;padding:0 8px!important}
 .elementor-element-2579d2ba>.e-con-inner{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px 12px!important;justify-content:center!important;width:100%!important;max-width:340px!important;margin:0 auto!important}
 .elementor-element-2579d2ba .elementor-counter{padding:10px 8px!important;border-radius:14px!important;background:rgba(255,255,255,.72)!important;box-shadow:0 4px 14px rgba(0,0,0,.04)!important}
