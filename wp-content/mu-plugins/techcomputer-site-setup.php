@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '45' );
+define( 'TC_SETUP_VERSION', '46' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -930,6 +930,7 @@ max-width:none!important;
 justify-self:end!important;
 align-self:center!important;
 margin:0!important;
+position:relative!important;
 }
 {$nav} .elementor-widget-container,{$nav} .hfe-nav-menu__layout-horizontal{
 width:auto!important;
@@ -938,13 +939,45 @@ display:flex!important;
 justify-content:flex-end!important;
 align-items:center!important;
 }
-{$nav} .hfe-nav-menu__layout-horizontal .hfe-nav-menu{display:none!important}
+{$nav} .hfe-nav-menu__toggle:not(.hfe-active-menu)+.hfe-nav-menu__layout-horizontal,
+{$nav} .hfe-nav-menu__toggle:not(.hfe-active-menu)+.hfe-nav-menu__layout-horizontal .hfe-nav-menu{
+visibility:hidden!important;
+opacity:0!important;
+height:0!important;
+overflow:hidden!important;
+pointer-events:none!important;
+}
+{$nav} .hfe-nav-menu__toggle.hfe-active-menu+.hfe-nav-menu__layout-horizontal,
+{$nav} nav.hfe-nav-menu__layout-horizontal.menu-is-active,
+{$nav} .hfe-nav-menu__toggle.hfe-active-menu+.hfe-nav-menu__layout-horizontal .hfe-nav-menu,
+{$nav} nav.hfe-nav-menu__layout-horizontal.menu-is-active .hfe-nav-menu{
+visibility:visible!important;
+opacity:1!important;
+height:auto!important;
+overflow:visible!important;
+pointer-events:auto!important;
+display:block!important;
+}
 {$nav} .hfe-nav-menu__toggle{
 display:inline-flex!important;
 align-items:center!important;
 justify-content:center!important;
 margin:0!important;
 padding:0!important;
+cursor:pointer!important;
+position:relative!important;
+z-index:2!important;
+}
+{$nav} .hfe-nav-menu__toggle.hfe-active-menu+.hfe-nav-menu__layout-horizontal{
+position:absolute!important;
+top:calc(100% + 8px)!important;
+right:0!important;
+z-index:9999!important;
+min-width:220px!important;
+background:#fff!important;
+border-radius:10px!important;
+box-shadow:0 10px 28px rgba(0,0,0,.14)!important;
+padding:8px 0!important;
 }
 }";
 }
