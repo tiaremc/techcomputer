@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '42' );
+define( 'TC_SETUP_VERSION', '43' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -853,19 +853,20 @@ a:hover,a:focus{color:' . $p['primary_d'] . '}
 .elementor-element.tc-header-nav .hfe-nav-menu__layout-horizontal .hfe-nav-menu{justify-content:flex-end}
 }
 @media(max-width:1024px){
-.elementor-element.tc-header-shell,.elementor-element-2f89bce4{flex-wrap:nowrap!important;justify-content:space-between!important;padding:14px 18px!important;align-items:center!important}
-.elementor-element.tc-header-shell>.elementor-element-128e2831,.elementor-element.tc-header-shell>.tc-header-actions,.elementor-element-2f89bce4>.elementor-element-128e2831,.elementor-element-2f89bce4>.tc-header-actions{order:2;width:auto!important;max-width:none!important;flex:0 0 auto!important;margin-left:auto!important}
+.elementor-element.tc-header-shell,.elementor-element-2f89bce4{flex-wrap:nowrap!important;justify-content:flex-start!important;padding:14px 18px!important;align-items:center!important}
+.elementor-element.tc-header-shell>.elementor-element-3e5e84b8,.elementor-element.tc-header-shell>.elementor-element.tc-header-logo,.elementor-element-2f89bce4>.elementor-element-3e5e84b8,.elementor-element-2f89bce4 .elementor-element.tc-header-logo{order:1!important;margin-right:auto!important;flex:0 1 auto!important;width:auto!important;max-width:50%!important}
+.elementor-element.tc-header-shell>.elementor-element-128e2831,.elementor-element.tc-header-shell>.tc-header-actions,.elementor-element-2f89bce4>.elementor-element-128e2831,.elementor-element-2f89bce4>.tc-header-actions{order:2;width:auto!important;max-width:none!important;flex:0 0 auto!important;margin-left:0!important}
 .elementor-element.tc-header-shell>.elementor-element-2dbc6304,.elementor-element.tc-header-shell>.tc-header-nav,.elementor-element-2f89bce4>.elementor-element-2dbc6304,.elementor-element-2f89bce4>.tc-header-nav{order:3;flex:0 0 auto!important;width:auto!important;max-width:none!important;margin:0 0 0 8px!important}
 .elementor-element.tc-header-nav .hfe-nav-menu__layout-horizontal .hfe-nav-menu>li>a{padding:6px 10px!important;font-size:13px!important}
 }
 @media(max-width:767px){
-.elementor-element.tc-header-shell,.elementor-element-2f89bce4,.elementor-element-2f89bce4>.e-con-inner{display:flex!important;flex-wrap:nowrap!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;padding:10px 14px!important;gap:6px!important;width:100%!important;max-width:100%!important}
-.elementor-element.tc-header-shell>.elementor-element-3e5e84b8,.elementor-element.tc-header-shell>.elementor-element.tc-header-logo,.elementor-element-2f89bce4>.elementor-element-3e5e84b8,.elementor-element-2f89bce4 .elementor-element.tc-header-logo{order:1!important;width:auto!important;max-width:46%!important;flex:0 1 auto!important;min-width:0!important;justify-content:flex-start!important;margin:0!important}
+.elementor-element.tc-header-shell,.elementor-element-2f89bce4,.elementor-element-2f89bce4>.e-con-inner{display:flex!important;flex-wrap:nowrap!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;padding:10px 14px!important;gap:8px!important;width:100%!important;max-width:100%!important}
+.elementor-element.tc-header-shell>.elementor-element-3e5e84b8,.elementor-element.tc-header-shell>.elementor-element.tc-header-logo,.elementor-element-2f89bce4>.elementor-element-3e5e84b8,.elementor-element-2f89bce4 .elementor-element.tc-header-logo{order:1!important;width:auto!important;max-width:48%!important;flex:0 1 auto!important;min-width:0!important;justify-content:flex-start!important;margin:0 auto 0 0!important}
 .elementor-element.tc-header-shell>.elementor-element-128e2831,.elementor-element.tc-header-shell>.tc-header-actions,.elementor-element-2f89bce4>.elementor-element-128e2831,.elementor-element-2f89bce4>.tc-header-actions{order:2!important;width:auto!important;max-width:none!important;flex:0 0 auto!important;justify-content:flex-end!important;margin:0 0 0 auto!important}
-.elementor-element.tc-header-shell>.elementor-element-2dbc6304,.elementor-element.tc-header-shell>.tc-header-nav,.elementor-element-2f89bce4>.elementor-element-2dbc6304,.elementor-element-2f89bce4>.tc-header-nav{order:3!important;width:auto!important;max-width:none!important;flex:0 0 auto!important;margin:0 0 0 4px!important}
+.elementor-element.tc-header-shell>.elementor-element-2dbc6304,.elementor-element.tc-header-shell>.tc-header-nav,.elementor-element-2f89bce4>.elementor-element-2dbc6304,.elementor-element-2f89bce4>.tc-header-nav{order:3!important;width:auto!important;max-width:none!important;flex:0 0 auto!important;margin:0!important}
 .elementor-widget-image.tc-header-logo img,.tc-header-logo img{max-width:128px!important;max-height:38px!important}
 .elementor-element.tc-header-nav .hfe-nav-menu__toggle,.elementor-element-2dbc6304 .hfe-nav-menu__toggle{margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
-.elementor-element.tc-header-actions .elementor-widget-wrap,.elementor-element.tc-header-actions .e-con-inner,.elementor-element-128e2831 .e-con-inner{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:4px!important;width:auto!important;flex-wrap:nowrap!important}
+.elementor-element.tc-header-actions .elementor-widget-wrap,.elementor-element.tc-header-actions .e-con-inner,.elementor-element-128e2831 .e-con-inner{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important;width:auto!important;flex-wrap:nowrap!important}
 .elementor-element.tc-header-actions .elementor-widget,.elementor-element-128e2831 .elementor-widget{width:auto!important;max-width:none!important;margin:0!important}
 .elementor-element.tc-header-actions .elementor-icon,.elementor-element-128e2831 .elementor-icon{font-size:22px!important}
 .hfe-menu-cart__toggle .elementor-button-icon{font-size:24px!important}
@@ -2057,7 +2058,7 @@ function tc_apply_header_container_element( $element, $context ) {
 	$element['settings']['flex_align_items_tablet'] = 'center';
 	$element['settings']['flex_align_items_mobile'] = 'center';
 	$element['settings']['flex_direction_mobile']  = 'row';
-	$element['settings']['flex_justify_content_mobile'] = 'space-between';
+	$element['settings']['flex_justify_content_mobile'] = 'flex-start';
 	$element['settings']['flex_gap_mobile']        = array(
 		'unit'  => 'px',
 		'size'  => 8,
