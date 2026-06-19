@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '46' );
+define( 'TC_SETUP_VERSION', '48' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -844,6 +844,20 @@ function tc_header_element_in_group( $element_id, $group ) {
 }
 
 /**
+ * Agrupa IDs de Elementor en un selector :is() seguro (evita bugs de comas CSS).
+ */
+function tc_header_css_is( $scope, array $ids, $suffix = '' ) {
+	if ( empty( $ids ) ) {
+		return '';
+	}
+	$parts = array_map(
+		static fn( $id ) => '.elementor-element-' . $id,
+		$ids
+	);
+	return $scope . ' :is(' . implode( ',', $parts ) . ')' . $suffix;
+}
+
+/**
  * CSS de header móvil (carga al final para ganar a Elementor).
  */
 function tc_header_mobile_css() {
@@ -852,85 +866,112 @@ function tc_header_mobile_css() {
 		return '';
 	}
 
-	$scope = '.elementor-' . $header_id;
-	$shell = implode( ',', array_map(
-		static fn( $id ) => "{$scope} .elementor-element-{$id},{$scope} .elementor-element-{$id}>.e-con-inner",
-		tc_header_layout_ids()['shell']
-	) );
-	$nav = implode( ',', array_map(
-		static fn( $id ) => "{$scope} .elementor-element-{$id}",
-		tc_header_layout_ids()['nav']
-	) );
-	$actions = implode( ',', array_map(
-		static fn( $id ) => "{$scope} .elementor-element-{$id}",
-		tc_header_layout_ids()['actions']
-	) );
+	$scope       = '.elementor-' . $header_id;
+	$layout      = tc_header_layout_ids();
+	$shell_outer = tc_header_css_is( $scope, $layout['shell'] );
+	$shell_inner = tc_header_css_is( $scope, $layout['shell'], '>.e-con-inner' );
+	$nav         = tc_header_css_is( $scope, $layout['nav'] );
+	$actions     = tc_header_css_is( $scope, $layout['actions'] );
+	$logo        = $scope . ' :is(.elementor-element-3e5e84b8,.tc-header-logo)';
 
 	return "
 @media(max-width:1024px){
-{$shell}{
+{$shell_outer}{
 --flex-direction:row!important;
+--flex-wrap:nowrap!important;
 --flex-wrap-mobile:nowrap!important;
+--justify-content:flex-start!important;
 --container-widget-width:initial!important;
 --container-widget-height:100%!important;
---container-widget-flex-grow:1!important;
+--container-widget-flex-grow:0!important;
 --container-widget-align-self:stretch!important;
 --padding-top:12px!important;
 --padding-bottom:12px!important;
 --padding-left:14px!important;
 --padding-right:14px!important;
-display:grid!important;
-grid-template-columns:minmax(0,1fr) auto auto!important;
-grid-template-areas:\"logo actions nav\"!important;
+display:flex!important;
+flex-direction:row!important;
+flex-wrap:nowrap!important;
 align-items:center!important;
-column-gap:10px!important;
+justify-content:flex-start!important;
 width:100%!important;
 max-width:100%!important;
 }
-{$scope} .elementor-element-3cca832c.e-con,{$scope} .elementor-element-2f89bce4.e-con{--align-self:stretch!important}
-{$scope} .elementor-element-3cca832c>.e-con-inner,{$scope} .elementor-element-2f89bce4>.e-con-inner{display:contents!important}
-{$scope} .elementor-element-3e5e84b8,{$scope} .elementor-element.tc-header-logo{
-grid-area:logo!important;
-width:auto!important;
+{$shell_inner}{
+display:flex!important;
+flex-direction:row!important;
+flex-wrap:nowrap!important;
+align-items:center!important;
+justify-content:flex-start!important;
+gap:8px!important;
+width:100%!important;
 max-width:100%!important;
-justify-self:start!important;
+}
+{$logo}{
+order:1!important;
+flex:0 1 auto!important;
+min-width:0!important;
+width:auto!important;
+max-width:55%!important;
 align-self:center!important;
 text-align:left!important;
 margin:0!important;
+position:relative!important;
+z-index:1!important;
 }
-{$scope} .elementor-element-3e5e84b8 img,{$scope} .elementor-element.tc-header-logo img{
+{$logo} img{
 width:auto!important;
 max-width:118px!important;
 max-height:34px!important;
 height:auto!important;
+display:block!important;
 }
 {$actions}{
-grid-area:actions!important;
+order:2!important;
+flex:0 0 auto!important;
+flex-grow:0!important;
 width:auto!important;
 max-width:none!important;
 --width:auto!important;
+--flex-grow:0!important;
+--container-widget-flex-grow:0!important;
 --justify-content:flex-end!important;
-justify-self:end!important;
-align-self:center!important;
-margin:0!important;
-}
-{$actions} .e-con-inner{
 display:flex!important;
 flex-direction:row!important;
 flex-wrap:nowrap!important;
 align-items:center!important;
 justify-content:flex-end!important;
-gap:8px!important;
+gap:6px!important;
+align-self:center!important;
+margin:0 0 0 auto!important;
+position:static!important;
+z-index:2!important;
+}
+{$actions}>.e-con-inner{
+display:flex!important;
+flex-direction:row!important;
+flex-wrap:nowrap!important;
+align-items:center!important;
+justify-content:flex-end!important;
+gap:6px!important;
 width:auto!important;
 }
 {$nav}{
-grid-area:nav!important;
+order:3!important;
+flex:0 0 auto!important;
+flex-grow:0!important;
 width:auto!important;
 max-width:none!important;
-justify-self:end!important;
 align-self:center!important;
 margin:0!important;
 position:relative!important;
+z-index:2!important;
+}
+{$scope} .tc-header-nav,{$scope} .tc-header-actions,{$nav},{$actions}{
+width:auto!important;
+max-width:none!important;
+flex:0 0 auto!important;
+flex-grow:0!important;
 }
 {$nav} .elementor-widget-container,{$nav} .hfe-nav-menu__layout-horizontal{
 width:auto!important;
@@ -1035,6 +1076,7 @@ a:hover,a:focus{color:' . $p['primary_d'] . '}
 .elementor-element.tc-header-nav .hfe-nav-menu__layout-horizontal .hfe-nav-menu{justify-content:flex-end}
 }
 @media(max-width:1024px){
+.elementor-element.tc-header-nav,.elementor-element.tc-header-actions,.elementor-element.tc-header-shell>.tc-header-nav,.elementor-element.tc-header-shell>.tc-header-actions,.elementor-element.tc-header-shell>.elementor-element-2dbc6304,.elementor-element.tc-header-shell>.elementor-element-41cdefe5{width:auto!important;max-width:none!important;flex:0 0 auto!important;flex-grow:0!important}
 .elementor-element.tc-header-nav .hfe-nav-menu__layout-horizontal .hfe-nav-menu>li>a{padding:6px 10px!important;font-size:13px!important}
 }
 .tc-wa-float{position:fixed;right:22px;bottom:22px;z-index:99999;width:58px;height:58px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(0,0,0,.22);transition:transform .2s ease,box-shadow .2s ease;text-decoration:none}
