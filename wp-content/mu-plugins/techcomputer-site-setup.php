@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '48' );
+define( 'TC_SETUP_VERSION', '49' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -858,6 +858,39 @@ function tc_header_css_is( $scope, array $ids, $suffix = '' ) {
 }
 
 /**
+ * Reordena hijos del header: logo | iconos | menú (DOM alineado al diseño móvil).
+ *
+ * @param array<int,array<string,mixed>> $elements Hijos del contenedor shell.
+ * @return array<int,array<string,mixed>>
+ */
+function tc_reorder_header_shell_children( array $elements ) {
+	$logo = $actions = $nav = null;
+	$rest = array();
+
+	foreach ( $elements as $element ) {
+		$id = (string) ( $element['id'] ?? '' );
+		$classes = (string) ( $element['settings']['_css_classes'] ?? '' );
+
+		if ( '3e5e84b8' === $id || str_contains( $classes, 'tc-header-logo' ) ) {
+			$logo = $element;
+		} elseif ( tc_header_element_in_group( $id, 'nav' ) || str_contains( $classes, 'tc-header-nav' ) ) {
+			$nav = $element;
+		} elseif ( tc_header_element_in_group( $id, 'actions' ) || str_contains( $classes, 'tc-header-actions' ) ) {
+			$actions = $element;
+		} else {
+			$rest[] = $element;
+		}
+	}
+
+	$ordered = array_values( array_filter( array( $logo, $actions, $nav ) ) );
+	if ( count( $ordered ) < 2 ) {
+		return $elements;
+	}
+
+	return array_merge( $ordered, $rest );
+}
+
+/**
  * CSS de header móvil (carga al final para ganar a Elementor).
  */
 function tc_header_mobile_css() {
@@ -877,14 +910,12 @@ function tc_header_mobile_css() {
 	return "
 @media(max-width:1024px){
 {$shell_outer}{
+--display:flex!important;
 --flex-direction:row!important;
 --flex-wrap:nowrap!important;
 --flex-wrap-mobile:nowrap!important;
 --justify-content:flex-start!important;
---container-widget-width:initial!important;
---container-widget-height:100%!important;
 --container-widget-flex-grow:0!important;
---container-widget-align-self:stretch!important;
 --padding-top:12px!important;
 --padding-bottom:12px!important;
 --padding-left:14px!important;
@@ -893,57 +924,56 @@ display:flex!important;
 flex-direction:row!important;
 flex-wrap:nowrap!important;
 align-items:center!important;
-justify-content:flex-start!important;
 width:100%!important;
 max-width:100%!important;
 }
 {$shell_inner}{
-display:flex!important;
-flex-direction:row!important;
-flex-wrap:nowrap!important;
+--display:grid!important;
+display:grid!important;
+grid-template-columns:minmax(0,1fr) auto auto!important;
+grid-template-areas:\"logo actions nav\"!important;
 align-items:center!important;
-justify-content:flex-start!important;
-gap:8px!important;
+column-gap:8px!important;
 width:100%!important;
 max-width:100%!important;
+padding:0!important;
+}
+{$logo},{$nav},{$actions}{
+--order:0!important;
+--flex-grow:0!important;
+--flex-shrink:0!important;
+--flex-basis:auto!important;
+order:0!important;
+margin:0!important;
 }
 {$logo}{
-order:1!important;
-flex:0 1 auto!important;
+grid-area:logo!important;
+justify-self:start!important;
+align-self:center!important;
 min-width:0!important;
 width:auto!important;
-max-width:55%!important;
-align-self:center!important;
-text-align:left!important;
-margin:0!important;
-position:relative!important;
+max-width:100%!important;
 z-index:1!important;
 }
 {$logo} img{
 width:auto!important;
-max-width:118px!important;
-max-height:34px!important;
+max-width:110px!important;
+max-height:32px!important;
 height:auto!important;
 display:block!important;
 }
 {$actions}{
-order:2!important;
-flex:0 0 auto!important;
-flex-grow:0!important;
+grid-area:actions!important;
+justify-self:end!important;
+align-self:center!important;
 width:auto!important;
 max-width:none!important;
---width:auto!important;
---flex-grow:0!important;
---container-widget-flex-grow:0!important;
---justify-content:flex-end!important;
 display:flex!important;
 flex-direction:row!important;
 flex-wrap:nowrap!important;
 align-items:center!important;
 justify-content:flex-end!important;
-gap:6px!important;
-align-self:center!important;
-margin:0 0 0 auto!important;
+gap:4px!important;
 position:static!important;
 z-index:2!important;
 }
@@ -953,17 +983,16 @@ flex-direction:row!important;
 flex-wrap:nowrap!important;
 align-items:center!important;
 justify-content:flex-end!important;
-gap:6px!important;
+gap:4px!important;
 width:auto!important;
 }
 {$nav}{
-order:3!important;
-flex:0 0 auto!important;
-flex-grow:0!important;
+grid-area:nav!important;
+justify-self:end!important;
+align-self:center!important;
 width:auto!important;
 max-width:none!important;
-align-self:center!important;
-margin:0!important;
+min-width:0!important;
 position:relative!important;
 z-index:2!important;
 }
@@ -973,12 +1002,21 @@ max-width:none!important;
 flex:0 0 auto!important;
 flex-grow:0!important;
 }
-{$nav} .elementor-widget-container,{$nav} .hfe-nav-menu__layout-horizontal{
+{$nav} .hfe-nav-menu.hfe-layout-horizontal,{$nav} .elementor-widget-container{
+display:flex!important;
+flex-direction:row!important;
+align-items:center!important;
+justify-content:flex-end!important;
 width:auto!important;
 max-width:none!important;
-display:flex!important;
-justify-content:flex-end!important;
-align-items:center!important;
+}
+{$nav} .hfe-nav-menu__toggle{
+display:inline-flex!important;
+margin:0!important;
+margin-left:0!important;
+padding:0!important;
+cursor:pointer!important;
+flex:0 0 auto!important;
 }
 {$nav} .hfe-nav-menu__toggle:not(.hfe-active-menu)+.hfe-nav-menu__layout-horizontal,
 {$nav} .hfe-nav-menu__toggle:not(.hfe-active-menu)+.hfe-nav-menu__layout-horizontal .hfe-nav-menu{
@@ -998,16 +1036,6 @@ height:auto!important;
 overflow:visible!important;
 pointer-events:auto!important;
 display:block!important;
-}
-{$nav} .hfe-nav-menu__toggle{
-display:inline-flex!important;
-align-items:center!important;
-justify-content:center!important;
-margin:0!important;
-padding:0!important;
-cursor:pointer!important;
-position:relative!important;
-z-index:2!important;
 }
 {$nav} .hfe-nav-menu__toggle.hfe-active-menu+.hfe-nav-menu__layout-horizontal{
 position:absolute!important;
@@ -2737,6 +2765,9 @@ function tc_process_elementor_elements( $elements, $context = array() ) {
 	foreach ( $elements as &$element ) {
 		if ( ! empty( $element['elements'] ) ) {
 			$element['elements'] = tc_process_elementor_elements( $element['elements'], $context );
+			if ( ! empty( $context['header_template'] ) && tc_header_element_in_group( $element['id'] ?? '', 'shell' ) ) {
+				$element['elements'] = tc_reorder_header_shell_children( $element['elements'] );
+			}
 		}
 
 		if ( ! empty( $context['header_template'] ) && tc_is_header_logo_slot_element( $element ) ) {
