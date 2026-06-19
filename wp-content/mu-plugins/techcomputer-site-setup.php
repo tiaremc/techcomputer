@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '59' );
+define( 'TC_SETUP_VERSION', '60' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -50,6 +50,9 @@ add_action( 'wp_footer', 'tc_render_contact_page_directions', 18 );
 add_action( 'wp_footer', 'tc_render_whatsapp_float', 25 );
 add_action( 'admin_post_tc_contact_form', 'tc_handle_contact_form' );
 add_action( 'admin_post_nopriv_tc_contact_form', 'tc_handle_contact_form' );
+add_filter( 'gettext', 'tc_localize_woocommerce_gettext', 20, 3 );
+add_filter( 'woocommerce_page_title', 'tc_localize_woocommerce_page_title' );
+add_filter( 'document_title_parts', 'tc_localize_cart_document_title' );
 
 function tc_disable_hello_header_when_hfe( $show ) {
 	if ( function_exists( 'hfe_header_enabled' ) && ( hfe_header_enabled() || hfe_footer_enabled() ) ) {
@@ -186,6 +189,7 @@ function tc_maybe_runtime_sync() {
 
 	if ( function_exists( 'wc_get_product' ) ) {
 		tc_ensure_featured_service_products();
+		tc_localize_woocommerce_pages();
 	}
 
 	$home_id = tc_get_home_page_id();
@@ -3377,6 +3381,73 @@ function tc_shop_remove_default_notices() {
 function tc_disable_store_coming_soon() {
 	update_option( 'woocommerce_coming_soon', 'no' );
 	update_option( 'woocommerce_store_pages_only', 'no' );
+}
+
+/**
+ * Renombra la página de carrito de WooCommerce a español.
+ */
+function tc_localize_woocommerce_pages() {
+	if ( ! function_exists( 'wc_get_page_id' ) ) {
+		return;
+	}
+
+	$pages = array(
+		'cart' => 'Carrito',
+	);
+	foreach ( $pages as $page_key => $title ) {
+		$page_id = (int) wc_get_page_id( $page_key );
+		if ( $page_id <= 0 ) {
+			continue;
+		}
+		$page = get_post( $page_id );
+		if ( ! $page instanceof WP_Post ) {
+			continue;
+		}
+		if ( $page->post_title === $title ) {
+			continue;
+		}
+		wp_update_post(
+			array(
+				'ID'         => $page_id,
+				'post_title' => $title,
+			)
+		);
+	}
+}
+
+function tc_localize_woocommerce_gettext( $translated, $text, $domain ) {
+	if ( ! in_array( $domain, array( 'woocommerce', 'header-footer-elementor' ), true ) ) {
+		return $translated;
+	}
+
+	$map = array(
+		'Cart'                        => 'Carrito',
+		'View cart'                   => 'Ver carrito',
+		'View Cart'                   => 'Ver carrito',
+		'Return to cart'              => 'Volver al carrito',
+		'Return to Cart'              => 'Volver al carrito',
+		'Update cart'                 => 'Actualizar carrito',
+		'Update Cart'                 => 'Actualizar carrito',
+		'Your cart is currently empty.' => 'Tu carrito está vacío.',
+	);
+
+	return $map[ $text ] ?? $translated;
+}
+
+function tc_localize_woocommerce_page_title( $title ) {
+	if ( function_exists( 'is_cart' ) && is_cart() && 'Cart' === $title ) {
+		return 'Carrito';
+	}
+
+	return $title;
+}
+
+function tc_localize_cart_document_title( $title ) {
+	if ( function_exists( 'is_cart' ) && is_cart() && isset( $title['title'] ) && 'Cart' === $title['title'] ) {
+		$title['title'] = 'Carrito';
+	}
+
+	return $title;
 }
 
 function tc_hide_shop_default_title( $show ) {
