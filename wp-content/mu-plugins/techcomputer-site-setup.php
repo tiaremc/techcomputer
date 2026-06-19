@@ -20,7 +20,7 @@ define( 'TC_IDX_HEADER', 14 );
 define( 'TC_IDX_ABOUT', 11 );
 define( 'TC_IDX_CONTACT', 6 );
 define( 'TC_IDX_PRODUCT', 9 );
-define( 'TC_SETUP_VERSION', '44' );
+define( 'TC_SETUP_VERSION', '45' );
 define( 'TC_IDX_GLOBAL', 0 );
 
 add_filter( 'hello_elementor_header_footer', 'tc_disable_hello_header_when_hfe' );
@@ -826,99 +826,127 @@ function tc_normalize_brand_settings( &$settings ) {
 }
 
 /**
+ * IDs del header Elementor (kit original y header publicado en HFE).
+ *
+ * @return array{shell:string[],nav:string[],actions:string[]}
+ */
+function tc_header_layout_ids() {
+	return array(
+		'shell'    => array( '2f89bce4', '3cca832c' ),
+		'nav'      => array( '2dbc6304', '41cdefe5' ),
+		'actions'  => array( '128e2831', '1a7aa264' ),
+	);
+}
+
+function tc_header_element_in_group( $element_id, $group ) {
+	$map = tc_header_layout_ids();
+	return in_array( (string) $element_id, $map[ $group ] ?? array(), true );
+}
+
+/**
  * CSS de header móvil (carga al final para ganar a Elementor).
  */
 function tc_header_mobile_css() {
-	return '
+	$header_id = function_exists( 'get_hfe_header_id' ) ? (int) get_hfe_header_id() : 0;
+	if ( $header_id <= 0 ) {
+		return '';
+	}
+
+	$scope = '.elementor-' . $header_id;
+	$shell = implode( ',', array_map(
+		static fn( $id ) => "{$scope} .elementor-element-{$id},{$scope} .elementor-element-{$id}>.e-con-inner",
+		tc_header_layout_ids()['shell']
+	) );
+	$nav = implode( ',', array_map(
+		static fn( $id ) => "{$scope} .elementor-element-{$id}",
+		tc_header_layout_ids()['nav']
+	) );
+	$actions = implode( ',', array_map(
+		static fn( $id ) => "{$scope} .elementor-element-{$id}",
+		tc_header_layout_ids()['actions']
+	) );
+
+	return "
 @media(max-width:1024px){
-body .elementor-location-header .elementor-element-2f89bce4,
-body .elementor-location-header .elementor-element-2f89bce4.e-con,
-body .elementor-location-header .elementor-element.tc-header-shell{padding:12px 16px!important}
-body .elementor-location-header .elementor-element-2f89bce4,
-body .elementor-location-header .elementor-element-2f89bce4>.e-con-inner,
-body .elementor-location-header .elementor-element.tc-header-shell,
-body .elementor-location-header .elementor-element.tc-header-shell>.e-con-inner{
+{$shell}{
+--flex-direction:row!important;
+--flex-wrap-mobile:nowrap!important;
+--container-widget-width:initial!important;
+--container-widget-height:100%!important;
+--container-widget-flex-grow:1!important;
+--container-widget-align-self:stretch!important;
+--padding-top:12px!important;
+--padding-bottom:12px!important;
+--padding-left:14px!important;
+--padding-right:14px!important;
 display:grid!important;
 grid-template-columns:minmax(0,1fr) auto auto!important;
-grid-template-areas:"logo actions nav"!important;
+grid-template-areas:\"logo actions nav\"!important;
 align-items:center!important;
 column-gap:10px!important;
-row-gap:0!important;
 width:100%!important;
 max-width:100%!important;
-flex-direction:row!important;
-flex-wrap:nowrap!important;
 }
-body .elementor-location-header .elementor-element-3e5e84b8,
-body .elementor-location-header .elementor-element.tc-header-logo,
-body .elementor-location-header .elementor-element-2f89bce4 .elementor-element-3e5e84b8,
-body .elementor-location-header .elementor-element-2f89bce4 .elementor-element.tc-header-logo{
+{$scope} .elementor-element-3cca832c.e-con,{$scope} .elementor-element-2f89bce4.e-con{--align-self:stretch!important}
+{$scope} .elementor-element-3cca832c>.e-con-inner,{$scope} .elementor-element-2f89bce4>.e-con-inner{display:contents!important}
+{$scope} .elementor-element-3e5e84b8,{$scope} .elementor-element.tc-header-logo{
 grid-area:logo!important;
-width:auto!important;max-width:100%!important;min-width:0!important;
-justify-self:start!important;align-self:center!important;margin:0!important;
+width:auto!important;
+max-width:100%!important;
+justify-self:start!important;
+align-self:center!important;
+text-align:left!important;
+margin:0!important;
 }
-body .elementor-location-header .elementor-element-128e2831,
-body .elementor-location-header .elementor-element.tc-header-actions,
-body .elementor-location-header .elementor-element-2f89bce4 .elementor-element-128e2831,
-body .elementor-location-header .elementor-element-2f89bce4 .elementor-element.tc-header-actions{
+{$scope} .elementor-element-3e5e84b8 img,{$scope} .elementor-element.tc-header-logo img{
+width:auto!important;
+max-width:118px!important;
+max-height:34px!important;
+height:auto!important;
+}
+{$actions}{
 grid-area:actions!important;
-width:auto!important;max-width:none!important;min-width:0!important;
-justify-self:end!important;align-self:center!important;margin:0!important;
+width:auto!important;
+max-width:none!important;
+--width:auto!important;
+--justify-content:flex-end!important;
+justify-self:end!important;
+align-self:center!important;
+margin:0!important;
 }
-body .elementor-location-header .elementor-element-2dbc6304,
-body .elementor-location-header .elementor-element.tc-header-nav,
-body .elementor-location-header .elementor-element-2f89bce4 .elementor-element-2dbc6304,
-body .elementor-location-header .elementor-element-2f89bce4 .elementor-element.tc-header-nav{
-grid-area:nav!important;
-width:auto!important;max-width:none!important;min-width:0!important;
-justify-self:end!important;align-self:center!important;margin:0!important;
-}
-body .elementor-location-header .elementor-element-128e2831 .e-con-inner,
-body .elementor-location-header .elementor-element.tc-header-actions .e-con-inner,
-body .elementor-location-header .elementor-element-128e2831 .elementor-widget-wrap{
-display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
-align-items:center!important;justify-content:flex-end!important;gap:8px!important;
-width:auto!important;max-width:none!important;
-}
-body .elementor-location-header .elementor-element-2dbc6304 .elementor-widget-container,
-body .elementor-location-header .elementor-element-2dbc6304 .hfe-nav-menu__layout-horizontal,
-body .elementor-location-header .elementor-element.tc-header-nav .elementor-widget-container{
-width:auto!important;max-width:none!important;display:flex!important;
-justify-content:flex-end!important;align-items:center!important;
-}
-body .elementor-location-header .elementor-element-2dbc6304 .hfe-nav-menu__layout-horizontal .hfe-nav-menu{
-display:none!important;
-}
-body .elementor-location-header .elementor-element-2dbc6304 .hfe-nav-menu__toggle,
-body .elementor-location-header .elementor-element.tc-header-nav .hfe-nav-menu__toggle{
-display:inline-flex!important;align-items:center!important;justify-content:center!important;
-margin:0!important;padding:0!important;width:auto!important;
-}
-body .elementor-location-header .elementor-widget-image.tc-header-logo img,
-body .elementor-location-header .tc-header-logo img{max-width:132px!important;max-height:40px!important}
-body .elementor-location-header .hfe-menu-cart__toggle .elementor-button-icon{font-size:24px!important}
-}
-@media(max-width:1024px){
-.elementor-element-2f89bce4,
-.elementor-element-2f89bce4>.e-con-inner,
-.elementor-element.tc-header-shell,
-.elementor-element.tc-header-shell>.e-con-inner{
-display:grid!important;
-grid-template-columns:minmax(0,1fr) auto auto!important;
-grid-template-areas:"logo actions nav"!important;
-align-items:center!important;
-column-gap:10px!important;
-width:100%!important;
+{$actions} .e-con-inner{
+display:flex!important;
 flex-direction:row!important;
 flex-wrap:nowrap!important;
+align-items:center!important;
+justify-content:flex-end!important;
+gap:8px!important;
+width:auto!important;
 }
-.elementor-element-3e5e84b8,.elementor-element.tc-header-logo{grid-area:logo!important;width:auto!important;max-width:100%!important;justify-self:start!important;margin:0!important}
-.elementor-element-128e2831,.elementor-element.tc-header-actions{grid-area:actions!important;width:auto!important;justify-self:end!important;margin:0!important}
-.elementor-element-2dbc6304,.elementor-element.tc-header-nav{grid-area:nav!important;width:auto!important;justify-self:end!important;margin:0!important}
-.elementor-element-128e2831 .e-con-inner,.elementor-element.tc-header-actions .e-con-inner{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;width:auto!important}
-.elementor-element-2dbc6304 .hfe-nav-menu__layout-horizontal .hfe-nav-menu{display:none!important}
-.elementor-element-2dbc6304 .hfe-nav-menu__toggle{display:inline-flex!important}
-}';
+{$nav}{
+grid-area:nav!important;
+width:auto!important;
+max-width:none!important;
+justify-self:end!important;
+align-self:center!important;
+margin:0!important;
+}
+{$nav} .elementor-widget-container,{$nav} .hfe-nav-menu__layout-horizontal{
+width:auto!important;
+max-width:none!important;
+display:flex!important;
+justify-content:flex-end!important;
+align-items:center!important;
+}
+{$nav} .hfe-nav-menu__layout-horizontal .hfe-nav-menu{display:none!important}
+{$nav} .hfe-nav-menu__toggle{
+display:inline-flex!important;
+align-items:center!important;
+justify-content:center!important;
+margin:0!important;
+padding:0!important;
+}
+}";
 }
 
 function tc_enqueue_header_mobile_fix() {
@@ -2152,7 +2180,7 @@ function tc_apply_header_logo_element( $element, $context ) {
 }
 
 function tc_apply_header_container_element( $element, $context ) {
-	if ( empty( $context['header_template'] ) || '2f89bce4' !== ( $element['id'] ?? '' ) ) {
+	if ( empty( $context['header_template'] ) || ! tc_header_element_in_group( $element['id'] ?? '', 'shell' ) ) {
 		return $element;
 	}
 
@@ -2204,7 +2232,7 @@ function tc_apply_header_container_element( $element, $context ) {
 }
 
 function tc_apply_header_menu_element( $element, $context ) {
-	if ( empty( $context['header_template'] ) || '2dbc6304' !== ( $element['id'] ?? '' ) || 'navigation-menu' !== ( $element['widgetType'] ?? '' ) ) {
+	if ( empty( $context['header_template'] ) || ! tc_header_element_in_group( $element['id'] ?? '', 'nav' ) || 'navigation-menu' !== ( $element['widgetType'] ?? '' ) ) {
 		return $element;
 	}
 
@@ -2254,7 +2282,7 @@ function tc_apply_header_menu_element( $element, $context ) {
 }
 
 function tc_apply_header_actions_element( $element, $context ) {
-	if ( empty( $context['header_template'] ) || '128e2831' !== ( $element['id'] ?? '' ) ) {
+	if ( empty( $context['header_template'] ) || ! tc_header_element_in_group( $element['id'] ?? '', 'actions' ) ) {
 		return $element;
 	}
 
