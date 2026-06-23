@@ -8,7 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'TC_AD_LANDING_VERSION', '1' );
+define( 'TC_AD_LANDING_VERSION', '5' );
+define( 'TC_AD_LANDING_VIDEO_URL', 'https://techcomputer.cl/wp-content/uploads/2024/11/A3Directo.mp4' );
 
 add_action( 'init', 'tc_ad_landing_register_shortcode' );
 add_action( 'init', 'tc_ad_landing_maybe_create_pages', 20 );
@@ -28,8 +29,9 @@ function tc_ad_landing_definitions() {
 			'badge'       => 'Instalación en 30 minutos',
 			'headline'    => 'Cambio de Pantalla Notebook',
 			'subheadline' => 'Garantía de 6 meses · Todas las marcas · Técnicos especializados',
-			'cta'         => 'Cotizar por WhatsApp',
+			'cta'         => 'Reserva tu hora por WhatsApp',
 			'type'        => 'pantallas',
+			'hero_layout' => 'pantallas-promo',
 			'intro'       => 'Encuentra pantallas compatibles para HP, Lenovo, Dell, Asus y Acer. Cotiza según marca, tamaño y modelo de tu equipo.',
 			'faq_title'   => 'Preguntas frecuentes – Cambio de pantallas notebook',
 			'faq'         => tc_ad_landing_faq_pantallas(),
@@ -40,8 +42,9 @@ function tc_ad_landing_definitions() {
 			'badge'       => 'Repuestos con garantía',
 			'headline'    => 'Pantallas para Notebook en Santiago',
 			'subheadline' => 'Stock por marca y modelo · Instalación rápida · Las Condes',
-			'cta'         => 'Cotizar pantalla',
+			'cta'         => 'Reserva tu hora por WhatsApp',
 			'type'        => 'pantallas',
+			'hero_layout' => 'pantallas-promo',
 			'intro'       => 'Compara pantallas por marca, pulgadas y resolución. Atención especializada en Los Militares, Las Condes.',
 			'faq_title'   => 'Preguntas frecuentes – Pantallas notebook',
 			'faq'         => tc_ad_landing_faq_pantallas(),
@@ -52,8 +55,9 @@ function tc_ad_landing_definitions() {
 			'badge'       => 'Servicio express',
 			'headline'    => 'Cambio de Pantalla Notebook en 30 Minutos',
 			'subheadline' => 'Diagnóstico profesional · Repuestos verificados · Garantía escrita',
-			'cta'         => 'Cotizar cambio de pantalla',
+			'cta'         => 'Reserva tu hora por WhatsApp',
 			'type'        => 'pantallas',
+			'hero_layout' => 'pantallas-promo',
 			'intro'       => 'Reemplazamos pantallas rotas o con fallas de imagen. Trabajamos con las principales marcas del mercado.',
 			'faq_title'   => 'Preguntas frecuentes – Cambio de pantalla',
 			'faq'         => tc_ad_landing_faq_pantallas(),
@@ -224,6 +228,75 @@ function tc_ad_landing_hero_image_url() {
 	return content_url( 'uploads/2026/06/tc-product-hero-banner.png' );
 }
 
+/**
+ * Banner promocional completo (la imagen que enviaste).
+ */
+function tc_ad_landing_pantallas_promo_banner_candidates() {
+	return array(
+		WP_CONTENT_DIR . '/uploads/2026/06/tc-landing-pantallas-promo.png',
+		WP_CONTENT_DIR . '/mu-plugins/assets/tc-landing-pantallas-promo.png',
+	);
+}
+
+function tc_ad_landing_pantallas_promo_banner_url() {
+	foreach ( tc_ad_landing_pantallas_promo_banner_candidates() as $path ) {
+		if ( file_exists( $path ) ) {
+			$uploads = wp_get_upload_dir();
+			if ( str_starts_with( $path, $uploads['basedir'] ) ) {
+				return $uploads['baseurl'] . str_replace( $uploads['basedir'], '', $path );
+			}
+			return content_url( str_replace( WP_CONTENT_DIR, '', $path ) );
+		}
+	}
+	return content_url( 'mu-plugins/assets/tc-landing-pantallas-promo.png' );
+}
+
+function tc_ad_landing_ensure_pantallas_promo_banner() {
+	foreach ( tc_ad_landing_pantallas_promo_banner_candidates() as $path ) {
+		if ( file_exists( $path ) ) {
+			return true;
+		}
+	}
+	$dir = WP_CONTENT_DIR . '/mu-plugins/assets';
+	if ( ! wp_mkdir_p( $dir ) ) {
+		return false;
+	}
+	$dest = trailingslashit( $dir ) . 'tc-landing-pantallas-promo.png';
+	if ( file_exists( $dest ) ) {
+		return true;
+	}
+	return false;
+}
+
+function tc_ad_landing_render_hero_pantallas_promo( $def, $wa, $msg ) {
+	tc_ad_landing_ensure_pantallas_promo_banner();
+	$banner = tc_ad_landing_pantallas_promo_banner_url();
+	ob_start();
+	?>
+	<section class="tc-ad-landing__hero tc-ad-landing__hero--pantallas">
+		<div class="tc-ad-landing__hero-banner">
+			<img
+				class="tc-ad-landing__hero-banner-img"
+				src="<?php echo esc_url( $banner ); ?>"
+				alt="<?php echo esc_attr( $def['title'] ); ?>"
+				width="1536"
+				height="1024"
+				loading="eager"
+				decoding="async"
+			>
+			<a
+				class="tc-ad-landing__hero-banner-wa"
+				href="<?php echo esc_url( $wa . '?text=' . $msg ); ?>"
+				target="_blank"
+				rel="noopener noreferrer"
+				aria-label="<?php echo esc_attr( $def['cta'] ); ?>"
+			></a>
+		</div>
+	</section>
+	<?php
+	return ob_get_clean();
+}
+
 function tc_ad_landing_enqueue_assets() {
 	if ( ! tc_ad_landing_get_slug() ) {
 		return;
@@ -246,6 +319,11 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__cta{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff!important;padding:14px 28px;border-radius:12px;font-weight:800;text-decoration:none!important;box-shadow:0 10px 30px rgba(0,0,0,.2)}
 .tc-ad-landing__cta:hover{transform:translateY(-1px);color:#fff!important}
 .tc-ad-landing__stats{display:flex;flex-wrap:wrap;justify-content:center;gap:20px 32px;margin-top:28px;font-size:.95rem}
+.tc-ad-landing__hero--pantallas{padding:0;background:#000;color:#fff;text-align:left;overflow:hidden}
+.tc-ad-landing__hero-banner{position:relative;display:block;max-width:1400px;margin:0 auto;line-height:0}
+.tc-ad-landing__hero-banner-img{display:block;width:100%;height:auto;vertical-align:top}
+.tc-ad-landing__hero-banner-wa{position:absolute;left:4.5%;bottom:28%;width:52%;height:11%;border-radius:999px;cursor:pointer}
+.tc-ad-landing__hero-banner-wa:hover{background:rgba(255,255,255,.04)}
 .tc-ad-landing__section{max-width:1140px;margin:0 auto;padding:48px 20px}
 .tc-ad-landing__section--tint{background:' . $p['tint'] . '}
 .tc-ad-landing__section h2{color:' . $p['dark'] . ';font-size:clamp(1.5rem,3vw,2rem);margin:0 0 12px;text-align:center}
@@ -260,15 +338,40 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__products .price{color:' . $p['primary'] . '!important;font-weight:700}
 .tc-ad-landing__faq details{background:#fff;border:1px solid #e8edf2;border-radius:12px;padding:14px 18px;margin-bottom:10px}
 .tc-ad-landing__faq summary{cursor:pointer;font-weight:700;color:' . $p['dark'] . '}
-.tc-ad-landing__form-wrap{max-width:720px;margin:0 auto;background:#fff;border-radius:18px;padding:28px;box-shadow:0 12px 40px rgba(15,23,42,.08)}
+.tc-ad-landing__form-split{display:grid;gap:28px 32px;align-items:start;max-width:1140px;margin:0 auto}
+@media(min-width:900px){.tc-ad-landing__form-split{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}}
+.tc-ad-landing__video-wrap{display:flex;justify-content:center;align-items:flex-start;background:#111;border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(15,23,42,.12);padding:12px}
+.tc-ad-landing__video{display:block;width:auto;max-width:100%;max-height:min(72vh,640px);height:auto;object-fit:contain;background:#111;margin:0 auto}
+.tc-ad-landing__form-wrap{max-width:none;margin:0;background:#fff;border-radius:18px;padding:28px;box-shadow:0 12px 40px rgba(15,23,42,.08)}
 .tc-ad-landing__form-wrap h2{text-align:left;margin-bottom:8px}
 .tc-ad-landing__form-lead{margin:0 0 20px;color:#64748b}
 .tc-ad-landing__location{text-align:center;margin-top:12px;font-size:.95rem}
-@media(max-width:767px){.tc-ad-landing__hero{padding:56px 16px 48px}.tc-ad-landing__section{padding:36px 16px}}
+body.tc-ad-landing-page--pantallas .site-main .page-content,body.tc-ad-landing-page--pantallas .site-main{padding-top:0}
+body.tc-ad-landing-page--pantallas .tc-ad-landing__hero--pantallas{width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+@media(max-width:767px){.tc-ad-landing__hero{padding:56px 16px 48px}.tc-ad-landing__section{padding:36px 16px}.tc-ad-landing__hero-banner-wa{left:5%;bottom:30%;width:90%;height:9%}.tc-ad-landing__form-split{gap:20px}}
 ';
 	wp_register_style( 'tc-ad-landing', false, array( 'tc-brand-colors' ), TC_AD_LANDING_VERSION );
 	wp_enqueue_style( 'tc-ad-landing' );
 	wp_add_inline_style( 'tc-ad-landing', $css );
+}
+
+function tc_ad_landing_render_form_video() {
+	$url = TC_AD_LANDING_VIDEO_URL;
+	ob_start();
+	?>
+	<div class="tc-ad-landing__video-wrap">
+		<video
+			class="tc-ad-landing__video"
+			controls
+			playsinline
+			preload="metadata"
+			src="<?php echo esc_url( $url ); ?>"
+		>
+			<?php esc_html_e( 'Tu navegador no soporta la reproducción de video.', 'techcomputer' ); ?>
+		</video>
+	</div>
+	<?php
+	return ob_get_clean();
 }
 
 function tc_ad_landing_render_products_grid() {
@@ -374,6 +477,11 @@ function tc_ad_landing_render( $slug ) {
 	ob_start();
 	?>
 	<div class="tc-ad-landing">
+		<?php
+		if ( ! empty( $def['hero_layout'] ) && 'pantallas-promo' === $def['hero_layout'] ) {
+			echo tc_ad_landing_render_hero_pantallas_promo( $def, $wa, $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		} else {
+			?>
 		<section class="tc-ad-landing__hero">
 			<div class="tc-ad-landing__hero-inner">
 				<span class="tc-ad-landing__badge"><?php echo esc_html( $def['badge'] ); ?></span>
@@ -387,12 +495,18 @@ function tc_ad_landing_render( $slug ) {
 				</div>
 			</div>
 		</section>
+			<?php
+		}
+		?>
 
 		<section class="tc-ad-landing__section">
-			<div class="tc-ad-landing__form-wrap">
-				<h2><?php esc_html_e( 'Ingresa tus datos y modelo de equipo', 'techcomputer' ); ?></h2>
-				<p class="tc-ad-landing__form-lead"><?php esc_html_e( 'Déjanos tus datos y nuestro equipo te contactará de inmediato.', 'techcomputer' ); ?></p>
-				<?php echo tc_ad_landing_contact_form( $slug ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<div class="tc-ad-landing__form-split">
+				<?php echo tc_ad_landing_render_form_video(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<div class="tc-ad-landing__form-wrap">
+					<h2><?php esc_html_e( 'Ingresa tus datos y modelo de equipo', 'techcomputer' ); ?></h2>
+					<p class="tc-ad-landing__form-lead"><?php esc_html_e( 'Déjanos tus datos y nuestro equipo te contactará de inmediato.', 'techcomputer' ); ?></p>
+					<?php echo tc_ad_landing_contact_form( $slug ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
 			</div>
 		</section>
 
@@ -489,8 +603,13 @@ function tc_ad_landing_hide_page_title( $show ) {
 }
 
 function tc_ad_landing_body_class( $classes ) {
-	if ( tc_ad_landing_get_slug() ) {
+	$slug = tc_ad_landing_get_slug();
+	if ( $slug ) {
 		$classes[] = 'tc-ad-landing-page';
+		$def = tc_ad_landing_definitions()[ $slug ];
+		if ( ! empty( $def['hero_layout'] ) && 'pantallas-promo' === $def['hero_layout'] ) {
+			$classes[] = 'tc-ad-landing-page--pantallas';
+		}
 	}
 	return $classes;
 }
