@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'TC_AD_LANDING_VERSION', '5' );
+define( 'TC_AD_LANDING_VERSION', '11' );
 define( 'TC_AD_LANDING_VIDEO_URL', 'https://techcomputer.cl/wp-content/uploads/2024/11/A3Directo.mp4' );
 
 add_action( 'init', 'tc_ad_landing_register_shortcode' );
@@ -301,6 +301,26 @@ function tc_ad_landing_enqueue_assets() {
 	if ( ! tc_ad_landing_get_slug() ) {
 		return;
 	}
+
+	if ( function_exists( 'wc_enqueue_styles' ) ) {
+		wc_enqueue_styles();
+	}
+	if ( 'yes' === get_option( 'woocommerce_enable_ajax_add_to_cart' ) ) {
+		wp_enqueue_script( 'wc-add-to-cart' );
+	}
+	wp_enqueue_script( 'wc-cart-fragments' );
+	if ( ! wp_style_is( 'jkit-elements-main', 'registered' ) ) {
+		wp_register_style(
+			'jkit-elements-main',
+			plugins_url( 'jeg-elementor-kit/assets/css/elements/main.css' ),
+			array(),
+			defined( 'JEG_ELEMENTOR_KIT_VERSION' ) ? JEG_ELEMENTOR_KIT_VERSION : '1.0'
+		);
+	}
+	if ( wp_style_is( 'jkit-elements-main', 'registered' ) ) {
+		wp_enqueue_style( 'jkit-elements-main' );
+	}
+
 	$p = function_exists( 'tc_brand_palette' ) ? tc_brand_palette() : array(
 		'primary'    => '#528A31',
 		'primary_d'  => '#3d6a24',
@@ -310,7 +330,7 @@ function tc_ad_landing_enqueue_assets() {
 		'tint'       => '#EEF4EA',
 	);
 	$css = '
-.tc-ad-landing{color:' . $p['body'] . ';font-size:1.05rem;line-height:1.65}
+.tc-ad-landing{color:' . $p['body'] . ';font-size:1.05rem;line-height:1.65;width:100%;max-width:100%}
 .tc-ad-landing__hero{position:relative;padding:72px 20px 64px;background:linear-gradient(135deg,rgba(30,41,59,.88),rgba(82,138,49,.82)),url("' . esc_url( tc_ad_landing_hero_image_url() ) . '") center/cover no-repeat;color:#fff;text-align:center}
 .tc-ad-landing__hero-inner{max-width:920px;margin:0 auto}
 .tc-ad-landing__badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);padding:8px 16px;border-radius:999px;font-weight:700;font-size:.9rem;margin-bottom:18px}
@@ -324,18 +344,37 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__hero-banner-img{display:block;width:100%;height:auto;vertical-align:top}
 .tc-ad-landing__hero-banner-wa{position:absolute;left:4.5%;bottom:28%;width:52%;height:11%;border-radius:999px;cursor:pointer}
 .tc-ad-landing__hero-banner-wa:hover{background:rgba(255,255,255,.04)}
-.tc-ad-landing__section{max-width:1140px;margin:0 auto;padding:48px 20px}
-.tc-ad-landing__section--tint{background:' . $p['tint'] . '}
+.tc-ad-landing__section{max-width:1140px;margin:0 auto;padding:48px 20px;width:100%;box-sizing:border-box}
+.tc-ad-landing__section--tint{background:' . $p['tint'] . ';width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding:48px max(20px,calc(50vw - 570px))}
 .tc-ad-landing__section h2{color:' . $p['dark'] . ';font-size:clamp(1.5rem,3vw,2rem);margin:0 0 12px;text-align:center}
-.tc-ad-landing__intro{text-align:center;max-width:760px;margin:0 auto 28px}
+.tc-ad-landing__intro{text-align:center;max-width:760px;margin:0 auto 32px;font-size:1.05rem;line-height:1.6}
 .tc-ad-landing__grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .tc-ad-landing__card{background:#fff;border:1px solid #e8edf2;border-radius:16px;padding:22px;box-shadow:0 8px 24px rgba(15,23,42,.05)}
 .tc-ad-landing__card-icon{font-size:1.8rem;margin-bottom:8px}
 .tc-ad-landing__card h3{margin:0 0 8px;font-size:1.05rem;color:' . $p['dark'] . '}
-.tc-ad-landing__products .products{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;list-style:none;margin:0;padding:0}
-.tc-ad-landing__products .products li{margin:0;width:100%}
-.tc-ad-landing__products .woocommerce-loop-product__title{font-size:1rem}
-.tc-ad-landing__products .price{color:' . $p['primary'] . '!important;font-weight:700}
+.tc-ad-landing__products{width:100%;max-width:1140px;margin:0 auto}
+.tc-ad-landing__products .tc-ad-landing__catalog{width:100%!important;max-width:100%!important;margin:0!important}
+.tc-ad-landing__products .tc-ad-landing__catalog .woocommerce{width:100%!important;max-width:100%!important;margin:0!important}
+.tc-ad-landing__products .tc-ad-landing__catalog .woocommerce ul.products.jkit-products{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:24px!important;list-style:none!important;margin:0!important;padding:0!important;width:100%!important}
+.tc-ad-landing__products .tc-ad-landing__catalog .woocommerce ul.products.jkit-products::before,.tc-ad-landing__products .tc-ad-landing__catalog .woocommerce ul.products.jkit-products::after{display:none!important;content:none!important}
+.tc-ad-landing__products .tc-ad-landing__product-item{list-style:none!important;margin:0!important;padding:0!important;width:100%!important;min-width:0!important;display:block!important}
+.tc-ad-landing__products .tc-ad-landing__product-card{display:flex!important;flex-direction:column!important;height:100%!important;background:#fff!important;border-radius:16px!important;padding:16px!important;box-shadow:0 4px 16px rgba(15,23,42,.06)!important;box-sizing:border-box!important}
+.tc-ad-landing__products .jkit-product{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;text-decoration:none!important;color:inherit!important}
+.tc-ad-landing__products .product-link{position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;background:#f8fafc!important;border-radius:12px!important;padding:20px 16px!important;margin:0 0 14px!important;min-height:170px!important;overflow:hidden!important}
+.tc-ad-landing__products .product-link img{max-height:140px!important;width:auto!important;max-width:100%!important;object-fit:contain!important;margin:0 auto!important;display:block!important}
+.tc-ad-landing__products .product-link .onsale{position:absolute!important;top:10px!important;left:10px!important;right:auto!important;bottom:auto!important;background:' . $p['primary'] . '!important;color:#fff!important;font-size:.72rem!important;font-weight:700!important;padding:6px 10px!important;border-radius:999px!important;text-transform:uppercase!important;letter-spacing:normal!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;line-height:1.2!important;margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+.tc-ad-landing__products .product-title{margin:0 0 8px!important;font-size:clamp(1rem,1.8vw,1.08rem)!important;line-height:1.4!important;font-weight:600!important;color:' . $p['dark'] . '!important;display:-webkit-box!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
+.tc-ad-landing__products .product-categories{margin:0 0 6px!important;font-size:12px!important;line-height:1.35!important;font-weight:600!important;letter-spacing:.04em!important;text-transform:uppercase!important;color:' . ( $p['muted'] ?? '#64748b' ) . '!important}
+.tc-ad-landing__products .price{font-size:1.05rem!important;color:' . $p['primary'] . '!important;font-weight:700!important;margin:0 0 4px!important}
+.tc-ad-landing__products .product-categories,.tc-ad-landing__products .product-title,.tc-ad-landing__products .price{letter-spacing:normal!important;word-spacing:normal!important}
+.tc-ad-landing__products .product-categories a{letter-spacing:normal!important;text-transform:none!important;text-decoration:none!important;color:inherit!important}
+.tc-ad-landing__products .price,.tc-ad-landing__products .price *{word-spacing:normal!important}
+.tc-ad-landing__products .tc-ad-landing__product-actions{margin-top:auto!important;padding-top:12px!important;flex-shrink:0!important}
+.tc-ad-landing__products .tc-ad-landing__product-actions .button,.tc-ad-landing__products .tc-ad-landing__product-actions .add_to_cart_button{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:100%!important;margin:0!important;padding:11px 14px!important;border-radius:10px!important;font-size:.88rem!important;font-weight:700!important;line-height:1.2!important;text-align:center!important;text-decoration:none!important;background:' . $p['primary'] . '!important;border:1px solid ' . $p['primary'] . '!important;color:#fff!important;box-sizing:border-box!important;float:none!important;position:static!important}
+.tc-ad-landing__products .tc-ad-landing__product-actions .button:hover,.tc-ad-landing__products .tc-ad-landing__product-actions .add_to_cart_button:hover{background:' . $p['primary_d'] . '!important;border-color:' . $p['primary_d'] . '!important;color:#fff!important}
+.tc-ad-landing__location{text-align:center;margin-top:28px;font-size:1rem;font-weight:600}
+.tc-ad-landing__location a{color:' . $p['primary'] . '!important;text-decoration:none!important}
+.tc-ad-landing__location a:hover{text-decoration:underline!important}
 .tc-ad-landing__faq details{background:#fff;border:1px solid #e8edf2;border-radius:12px;padding:14px 18px;margin-bottom:10px}
 .tc-ad-landing__faq summary{cursor:pointer;font-weight:700;color:' . $p['dark'] . '}
 .tc-ad-landing__form-split{display:grid;gap:28px 32px;align-items:start;max-width:1140px;margin:0 auto}
@@ -345,12 +384,15 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__form-wrap{max-width:none;margin:0;background:#fff;border-radius:18px;padding:28px;box-shadow:0 12px 40px rgba(15,23,42,.08)}
 .tc-ad-landing__form-wrap h2{text-align:left;margin-bottom:8px}
 .tc-ad-landing__form-lead{margin:0 0 20px;color:#64748b}
-.tc-ad-landing__location{text-align:center;margin-top:12px;font-size:.95rem}
-body.tc-ad-landing-page--pantallas .site-main .page-content,body.tc-ad-landing-page--pantallas .site-main{padding-top:0}
+body.tc-ad-landing-page{overflow-x:hidden}
+body.tc-ad-landing-page .site-main,body.tc-ad-landing-page .site-main .page-content,body.tc-ad-landing-page .site-main .entry-content{max-width:none!important;width:100%!important;padding-left:0!important;padding-right:0!important}
+body.tc-ad-landing-page .site-main .page-content,body.tc-ad-landing-page .site-main{padding-top:0}
 body.tc-ad-landing-page--pantallas .tc-ad-landing__hero--pantallas{width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
-@media(max-width:767px){.tc-ad-landing__hero{padding:56px 16px 48px}.tc-ad-landing__section{padding:36px 16px}.tc-ad-landing__hero-banner-wa{left:5%;bottom:30%;width:90%;height:9%}.tc-ad-landing__form-split{gap:20px}}
+@media(max-width:1024px){.tc-ad-landing__products .tc-ad-landing__catalog .woocommerce ul.products.jkit-products{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:20px!important}}
+@media(max-width:767px){.tc-ad-landing__hero{padding:56px 16px 48px}.tc-ad-landing__section{padding:36px 16px}.tc-ad-landing__section--tint{padding:36px 16px}.tc-ad-landing__products .tc-ad-landing__catalog .woocommerce ul.products.jkit-products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}.tc-ad-landing__hero-banner-wa{left:5%;bottom:30%;width:90%;height:9%}.tc-ad-landing__form-split{gap:20px}}
+@media(max-width:480px){.tc-ad-landing__products .tc-ad-landing__catalog .woocommerce ul.products.jkit-products{grid-template-columns:minmax(0,1fr)!important}}
 ';
-	wp_register_style( 'tc-ad-landing', false, array( 'tc-brand-colors' ), TC_AD_LANDING_VERSION );
+	wp_register_style( 'tc-ad-landing', false, array( 'tc-brand-colors', 'woocommerce-general', 'jkit-elements-main' ), TC_AD_LANDING_VERSION );
 	wp_enqueue_style( 'tc-ad-landing' );
 	wp_add_inline_style( 'tc-ad-landing', $css );
 }
@@ -374,11 +416,35 @@ function tc_ad_landing_render_form_video() {
 	return ob_get_clean();
 }
 
-function tc_ad_landing_render_products_grid() {
-	if ( ! function_exists( 'wc_get_products' ) ) {
-		return '';
-	}
-	$slugs = function_exists( 'tc_get_pantallas_slugs' ) ? tc_get_pantallas_slugs() : array( 'pantallas-notebook' );
+/**
+ * Slugs de pantallas más buscadas (techcomputer.cl + catálogo histórico).
+ *
+ * @return string[]
+ */
+function tc_ad_landing_popular_pantallas_catalog() {
+	return array(
+		'hp-240-g7',
+		'pantalla-notebook-hp-240-g7',
+		'asus-tuf-gaming-f15-fx506hc-hn111w-2',
+		'pantalla-notebook-15-6-full-hd-144hz-40pin',
+		'pantalla-notebook-16-1-full-hd-30pin',
+		'pantalla-para-notebook-hp-victus',
+		'pantalla-para-notebook-lenovo',
+		'lenovo-ideapad-320-15abr-2',
+		'cambio-de-pantalla-notebook-hp',
+		'cambio-de-pantalla-notebook-acer',
+		'hp-pavilion-14-ab156la-2',
+		'acer-aspire-5-a515-51g-59b5-hd',
+		'hp-15-ef1018la',
+		'lenovo-thinkpad-t490-hd-2',
+	);
+}
+
+/**
+ * @return int[]
+ */
+function tc_ad_landing_get_pantallas_category_ids() {
+	$slugs   = function_exists( 'tc_get_pantallas_slugs' ) ? tc_get_pantallas_slugs() : array( 'pantallas-notebook' );
 	$cat_ids = array();
 	foreach ( $slugs as $slug ) {
 		$term = get_term_by( 'slug', $slug, 'product_cat' );
@@ -386,34 +452,279 @@ function tc_ad_landing_render_products_grid() {
 			$cat_ids[] = (int) $term->term_id;
 		}
 	}
-	$args = array(
-		'status' => 'publish',
-		'limit'  => 8,
-		'orderby'=> 'date',
-		'order'  => 'DESC',
+	return $cat_ids;
+}
+
+/**
+ * Solo productos reales de pantallas (no servicios virtuales ni $0 sin imagen).
+ *
+ * @param \WC_Product|null $product Producto.
+ */
+function tc_ad_landing_is_valid_pantalla_product( $product ) {
+	if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
+		return false;
+	}
+
+	$product_id = $product->get_id();
+	if ( get_post_meta( $product_id, '_tc_featured_service', true ) ) {
+		return false;
+	}
+
+	if ( ! $product->get_image_id() ) {
+		return false;
+	}
+
+	if ( function_exists( 'tc_catalog_resolve_product_tipo' ) && 'productos' !== tc_catalog_resolve_product_tipo( $product_id ) ) {
+		return false;
+	}
+
+	$price = (float) $product->get_price();
+	if ( $price <= 0 ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * @return \WC_Product[]
+ */
+function tc_ad_landing_query_pantalla_products( $limit = 8, $exclude = array() ) {
+	if ( ! function_exists( 'wc_get_products' ) ) {
+		return array();
+	}
+
+	$limit   = max( 1, (int) $limit );
+	$exclude = array_filter( array_map( 'intval', (array) $exclude ) );
+	$out     = array();
+
+	if ( function_exists( 'tc_catalog_build_query_args' ) ) {
+		$query = new WP_Query(
+			tc_catalog_build_query_args(
+				array(
+					'tipo'     => 'productos',
+					'repuesto' => 'pantallas-notebook',
+					'marca'    => '',
+					'tamano'   => '',
+					'resolucion' => '',
+					'servicio' => '',
+					'q'        => '',
+				),
+				1,
+				$limit + count( $exclude ) + 4
+			)
+		);
+		if ( $query->have_posts() ) {
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$product = wc_get_product( get_the_ID() );
+				if ( ! tc_ad_landing_is_valid_pantalla_product( $product ) ) {
+					continue;
+				}
+				if ( in_array( $product->get_id(), $exclude, true ) ) {
+					continue;
+				}
+				$out[] = $product;
+				if ( count( $out ) >= $limit ) {
+					break;
+				}
+			}
+			wp_reset_postdata();
+		}
+	}
+
+	if ( count( $out ) >= $limit ) {
+		return $out;
+	}
+
+	$cat_ids = tc_ad_landing_get_pantallas_category_ids();
+	$args    = array(
+		'status'  => 'publish',
+		'limit'   => $limit + count( $exclude ) + 8,
+		'orderby' => 'date',
+		'order'   => 'DESC',
+		'exclude' => array_merge(
+			$exclude,
+			function_exists( 'tc_get_featured_service_product_ids' ) ? tc_get_featured_service_product_ids() : array()
+		),
 	);
 	if ( $cat_ids ) {
 		$args['category'] = $cat_ids;
-	} else {
-		$args['s'] = 'pantalla notebook';
 	}
-	$products = wc_get_products( $args );
+
+	foreach ( wc_get_products( $args ) as $product ) {
+		if ( ! tc_ad_landing_is_valid_pantalla_product( $product ) ) {
+			continue;
+		}
+		$id = $product->get_id();
+		if ( in_array( $id, $exclude, true ) ) {
+			continue;
+		}
+		$exclude[] = $id;
+		$out[]     = $product;
+		if ( count( $out ) >= $limit ) {
+			break;
+		}
+	}
+
+	return $out;
+}
+
+/**
+ * @return \WC_Product[]
+ */
+function tc_ad_landing_get_popular_pantallas_products( $limit = 8 ) {
+	if ( ! function_exists( 'wc_get_products' ) ) {
+		return array();
+	}
+
+	$limit    = max( 1, (int) $limit );
+	$seen     = array();
+	$products = array();
+	$cat_ids  = tc_ad_landing_get_pantallas_category_ids();
+
+	foreach ( tc_ad_landing_popular_pantallas_catalog() as $slug ) {
+		if ( count( $products ) >= $limit ) {
+			break;
+		}
+
+		$found = wc_get_products(
+			array(
+				'slug'   => $slug,
+				'status' => 'publish',
+				'limit'  => 1,
+			)
+		);
+
+		if ( empty( $found ) && $cat_ids ) {
+			$found = wc_get_products(
+				array(
+					's'        => str_replace( '-', ' ', $slug ),
+					'status'   => 'publish',
+					'limit'    => 3,
+					'category' => $cat_ids,
+				)
+			);
+		}
+
+		if ( empty( $found ) ) {
+			continue;
+		}
+
+		foreach ( $found as $product ) {
+			$id = $product->get_id();
+			if ( isset( $seen[ $id ] ) || ! tc_ad_landing_is_valid_pantalla_product( $product ) ) {
+				continue;
+			}
+			$seen[ $id ] = true;
+			$products[]  = $product;
+			if ( count( $products ) >= $limit ) {
+				break 2;
+			}
+		}
+	}
+
+	if ( count( $products ) < $limit ) {
+		foreach ( tc_ad_landing_query_pantalla_products( $limit - count( $products ), array_keys( $seen ) ) as $product ) {
+			$id = $product->get_id();
+			if ( isset( $seen[ $id ] ) ) {
+				continue;
+			}
+			$seen[ $id ] = true;
+			$products[]  = $product;
+		}
+	}
+
+	return $products;
+}
+
+/**
+ * @param \WC_Product $product Producto.
+ */
+function tc_ad_landing_render_product_card( $product ) {
+	if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
+		return;
+	}
+
+	$category_label = function_exists( 'tc_catalog_product_card_category' )
+		? tc_catalog_product_card_category( $product->get_id() )
+		: '';
+	?>
+	<li <?php wc_product_class( 'jkit-product-block tc-ad-landing__product-item', $product ); ?>>
+		<div class="tc-ad-landing__product-card">
+			<a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="jkit-product">
+				<div class="product-link">
+					<?php if ( $product->is_on_sale() ) : ?>
+						<span class="onsale text"><?php esc_html_e( 'Oferta', 'techcomputer' ); ?></span>
+					<?php endif; ?>
+					<?php echo $product->get_image( 'woocommerce_thumbnail', array( 'class' => 'wp-post-image product-image' ) ); ?>
+				</div>
+				<?php if ( $category_label ) : ?>
+					<div class="product-categories"><object><span><?php echo esc_html( $category_label ); ?></span></object></div>
+				<?php endif; ?>
+				<h3 class="product-title"><?php echo esc_html( $product->get_name() ); ?></h3>
+				<?php if ( $price_html = $product->get_price_html() ) : ?>
+					<span class="price"><?php echo wp_kses_post( $price_html ); ?></span>
+				<?php endif; ?>
+			</a>
+			<div class="tc-ad-landing__product-actions">
+				<?php
+				$button_classes = array_filter(
+					array(
+						'button',
+						'product_type_' . $product->get_type(),
+						$product->is_purchasable() && $product->is_in_stock() ? 'add_to_cart_button' : '',
+						$product->supports( 'ajax_add_to_cart' ) && $product->is_purchasable() && $product->is_in_stock() ? 'ajax_add_to_cart' : '',
+					)
+				);
+				$button_attrs = array(
+					'data-product_id'  => $product->get_id(),
+					'data-product_sku' => $product->get_sku(),
+					'aria-label'       => $product->add_to_cart_description(),
+					'rel'              => 'nofollow',
+				);
+				echo apply_filters(
+					'woocommerce_loop_add_to_cart_link',
+					sprintf(
+						'<a href="%s" data-quantity="1" class="%s" %s>%s</a>',
+						esc_url( $product->add_to_cart_url() ),
+						esc_attr( implode( ' ', $button_classes ) ),
+						wc_implode_html_attributes( $button_attrs ),
+						esc_html( $product->add_to_cart_text() )
+					),
+					$product,
+					array(
+						'class'      => implode( ' ', $button_classes ),
+						'attributes' => $button_attrs,
+					)
+				);
+				?>
+			</div>
+		</div>
+	</li>
+	<?php
+}
+
+function tc_ad_landing_render_products_grid() {
+	if ( ! function_exists( 'wc_get_products' ) ) {
+		return '';
+	}
+
+	$products = tc_ad_landing_get_popular_pantallas_products( 8 );
 	if ( ! $products ) {
 		return '<p class="tc-ad-landing__intro">' . esc_html__( 'Próximamente más modelos. Cotiza por WhatsApp con tu marca y modelo.', 'techcomputer' ) . '</p>';
 	}
+
 	ob_start();
-	echo '<ul class="products columns-4">';
+	echo '<div class="jeg-elementor-kit jkit-product-grid tc-ad-landing__catalog">';
+	echo '<div class="woocommerce tc-catalog-woocommerce">';
+	echo '<ul class="products jkit-products jkit-align-left tc-catalog-grid">';
 	foreach ( $products as $product ) {
-		$post_object = get_post( $product->get_id() );
-		if ( ! $post_object ) {
-			continue;
-		}
-		setup_postdata( $GLOBALS['post'] = $post_object ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		wc_get_template_part( 'content', 'product' );
+		tc_ad_landing_render_product_card( $product );
 	}
-	echo '</ul>';
-	wp_reset_postdata();
-	return '<div class="tc-ad-landing__products woocommerce">' . ob_get_clean() . '</div>';
+	echo '</ul></div></div>';
+
+	return '<div class="tc-ad-landing__products">' . ob_get_clean() . '</div>';
 }
 
 function tc_ad_landing_contact_form( $slug ) {
@@ -512,7 +823,7 @@ function tc_ad_landing_render( $slug ) {
 
 		<?php if ( 'pantallas' === $def['type'] ) : ?>
 		<section class="tc-ad-landing__section tc-ad-landing__section--tint">
-			<h2><?php esc_html_e( 'Pantallas para notebook', 'techcomputer' ); ?></h2>
+			<h2><?php esc_html_e( 'Las pantallas más buscadas', 'techcomputer' ); ?></h2>
 			<p class="tc-ad-landing__intro"><?php echo esc_html( $def['intro'] ); ?></p>
 			<?php echo tc_ad_landing_render_products_grid(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			<p class="tc-ad-landing__location">
