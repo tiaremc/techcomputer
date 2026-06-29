@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'TC_AD_LANDING_VERSION', '11' );
+define( 'TC_AD_LANDING_VERSION', '15' );
 define( 'TC_AD_LANDING_VIDEO_URL', 'https://techcomputer.cl/wp-content/uploads/2024/11/A3Directo.mp4' );
 
 add_action( 'init', 'tc_ad_landing_register_shortcode' );
@@ -17,6 +17,116 @@ add_action( 'wp_enqueue_scripts', 'tc_ad_landing_enqueue_assets' );
 add_filter( 'the_content', 'tc_ad_landing_filter_content', 5 );
 add_filter( 'document_title_parts', 'tc_ad_landing_document_title' );
 add_action( 'wp_head', 'tc_ad_landing_meta_description', 1 );
+add_action( 'add_meta_boxes', 'tc_ad_landing_add_video_metabox' );
+add_action( 'save_post', 'tc_ad_landing_save_video_metabox' );
+add_action( 'admin_enqueue_scripts', 'tc_ad_landing_admin_scripts' );
+
+function tc_ad_landing_admin_scripts( $hook ) {
+	if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+		return;
+	}
+	wp_enqueue_media();
+}
+
+function tc_ad_landing_add_video_metabox() {
+	$post_id = isset( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+	if ( ! $post_id ) {
+		return;
+	}
+	$slug = get_post_field( 'post_name', $post_id );
+	if ( ! isset( tc_ad_landing_definitions()[ $slug ] ) ) {
+		return;
+	}
+	add_meta_box(
+		'tc_ad_landing_video',
+		'🎬 Video de la landing',
+		'tc_ad_landing_render_video_metabox',
+		'page',
+		'normal',
+		'high'
+	);
+}
+
+function tc_ad_landing_render_video_metabox( $post ) {
+	$video_url = get_post_meta( $post->ID, '_tc_ad_landing_video_url', true );
+	$hero_img  = get_post_meta( $post->ID, '_tc_ad_landing_hero_image', true );
+	wp_nonce_field( 'tc_ad_landing_video_nonce', 'tc_ad_landing_video_nonce' );
+	?>
+	<table class="form-table" style="margin:0">
+		<tr>
+			<th style="width:160px"><label>📹 Video</label></th>
+			<td>
+				<div style="display:flex;gap:8px;align-items:center;">
+					<input type="url" id="tc_ad_landing_video_url" name="tc_ad_landing_video_url"
+						value="<?php echo esc_attr( $video_url ); ?>"
+						placeholder="Dejar vacío para usar el video por defecto"
+						style="flex:1;"/>
+					<button type="button" class="button" id="tc_landing_pick_video">Seleccionar video</button>
+				</div>
+				<?php if ( $video_url ) : ?>
+				<p style="margin:4px 0 0;color:#555;font-size:12px">Actual: <a href="<?php echo esc_url( $video_url ); ?>" target="_blank"><?php echo esc_html( basename( $video_url ) ); ?></a></p>
+				<?php endif; ?>
+			</td>
+		</tr>
+		<tr>
+			<th><label>🖼 Imagen de fondo (hero)</label></th>
+			<td>
+				<div style="display:flex;gap:8px;align-items:center;">
+					<input type="url" id="tc_ad_landing_hero_image" name="tc_ad_landing_hero_image"
+						value="<?php echo esc_attr( $hero_img ); ?>"
+						placeholder="Dejar vacío para usar la imagen por defecto"
+						style="flex:1;"/>
+					<button type="button" class="button" id="tc_landing_pick_hero">Seleccionar imagen</button>
+				</div>
+				<?php if ( $hero_img ) : ?>
+				<div style="margin-top:8px"><img src="<?php echo esc_url( $hero_img ); ?>" style="max-height:80px;border-radius:6px;border:1px solid #ddd"/></div>
+				<?php endif; ?>
+			</td>
+		</tr>
+	</table>
+	<script>
+	function tcLandingMediaPicker(btnId, inputId, type) {
+		document.getElementById(btnId).addEventListener('click', function() {
+			var frame = wp.media({ title: 'Seleccionar archivo', button: { text: 'Usar este archivo' }, library: { type: type }, multiple: false });
+			frame.on('select', function() {
+				var url = frame.state().get('selection').first().toJSON().url;
+				document.getElementById(inputId).value = url;
+			});
+			frame.open();
+		});
+	}
+	tcLandingMediaPicker('tc_landing_pick_video', 'tc_ad_landing_video_url', 'video');
+	tcLandingMediaPicker('tc_landing_pick_hero',  'tc_ad_landing_hero_image', 'image');
+	</script>
+	<?php
+}
+
+function tc_ad_landing_save_video_metabox( $post_id ) {
+	if ( ! isset( $_POST['tc_ad_landing_video_nonce'] ) ) {
+		return;
+	}
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['tc_ad_landing_video_nonce'] ) ), 'tc_ad_landing_video_nonce' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+	$video = isset( $_POST['tc_ad_landing_video_url'] ) ? esc_url_raw( wp_unslash( $_POST['tc_ad_landing_video_url'] ) ) : '';
+	if ( $video ) {
+		update_post_meta( $post_id, '_tc_ad_landing_video_url', $video );
+	} else {
+		delete_post_meta( $post_id, '_tc_ad_landing_video_url' );
+	}
+	$hero = isset( $_POST['tc_ad_landing_hero_image'] ) ? esc_url_raw( wp_unslash( $_POST['tc_ad_landing_hero_image'] ) ) : '';
+	if ( $hero ) {
+		update_post_meta( $post_id, '_tc_ad_landing_hero_image', $hero );
+	} else {
+		delete_post_meta( $post_id, '_tc_ad_landing_hero_image' );
+	}
+}
 
 /**
  * @return array<string, array<string, mixed>>
@@ -89,6 +199,7 @@ function tc_ad_landing_definitions() {
 			'benefits'    => tc_ad_landing_benefits_mantencion(),
 		),
 		'reparacion-notebook'             => array(
+			'video_url'   => content_url( 'uploads/2026/06/reparacion-notebook.mp4' ),
 			'title'       => 'Reparación Notebook',
 			'meta'        => 'Reparación notebook en Las Condes y Santiago. Pantallas, SSD, teclado, bisagras y placa madre con garantía.',
 			'badge'       => 'Servicio técnico especializado',
@@ -178,7 +289,89 @@ function tc_ad_landing_get_slug() {
 
 function tc_ad_landing_register_shortcode() {
 	add_shortcode( 'tc_ad_landing', 'tc_ad_landing_shortcode' );
+	add_shortcode( 'tc_ad_landing_form', 'tc_ad_landing_form_shortcode' );
+	add_shortcode( 'tc_ad_landing_faq', 'tc_ad_landing_faq_shortcode' );
+	add_shortcode( 'tc_ad_landing_benefits', 'tc_ad_landing_benefits_shortcode' );
 }
+
+function tc_ad_landing_resolve_slug( $atts = [] ) {
+	$slug = ! empty( $atts['slug'] ) ? sanitize_title( $atts['slug'] ) : '';
+	if ( ! $slug ) {
+		$slug = tc_ad_landing_get_slug();
+	}
+	if ( ! $slug ) {
+		$slug = get_post_field( 'post_name', get_the_ID() );
+	}
+	return isset( tc_ad_landing_definitions()[ $slug ] ) ? $slug : '';
+}
+
+function tc_ad_landing_form_shortcode( $atts ) {
+	$slug = tc_ad_landing_resolve_slug( (array) $atts );
+	if ( ! $slug ) {
+		return '';
+	}
+	$def = tc_ad_landing_definitions()[ $slug ];
+	ob_start();
+	?>
+	<div class="tc-ad-landing__form-wrap" style="background:#fff;border-radius:18px;padding:28px;box-shadow:0 12px 40px rgba(15,23,42,.08)">
+		<h2 style="text-align:left;margin-bottom:8px"><?php esc_html_e( 'Ingresa tus datos y modelo de equipo', 'techcomputer' ); ?></h2>
+		<p style="margin:0 0 20px;color:#64748b"><?php esc_html_e( 'Déjanos tus datos y nuestro equipo te contactará de inmediato.', 'techcomputer' ); ?></p>
+		<?php echo tc_ad_landing_contact_form( $slug ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+function tc_ad_landing_faq_shortcode( $atts ) {
+	$slug = tc_ad_landing_resolve_slug( (array) $atts );
+	if ( ! $slug ) {
+		return '';
+	}
+	$def = tc_ad_landing_definitions()[ $slug ];
+	if ( empty( $def['faq'] ) ) {
+		return '';
+	}
+	ob_start();
+	?>
+	<div class="tc-ad-landing__faq" style="max-width:860px;margin:0 auto">
+		<h2 style="text-align:center;margin-bottom:28px"><?php echo esc_html( $def['faq_title'] ); ?></h2>
+		<div class="tc-ad-landing__faq-list">
+		<?php foreach ( $def['faq'] as $item ) : ?>
+			<details style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;margin-bottom:10px">
+				<summary style="font-weight:700;cursor:pointer;list-style:none"><?php echo esc_html( $item['q'] ); ?></summary>
+				<p style="margin:10px 0 0;color:#475569"><?php echo esc_html( $item['a'] ); ?></p>
+			</details>
+		<?php endforeach; ?>
+		</div>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+function tc_ad_landing_benefits_shortcode( $atts ) {
+	$slug = tc_ad_landing_resolve_slug( (array) $atts );
+	if ( ! $slug ) {
+		return '';
+	}
+	$def = tc_ad_landing_definitions()[ $slug ];
+	if ( empty( $def['benefits'] ) ) {
+		return '';
+	}
+	ob_start();
+	?>
+	<div class="tc-ad-landing__grid" style="display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+	<?php foreach ( $def['benefits'] as $b ) : ?>
+		<div style="background:#fff;border:1px solid #e8edf2;border-radius:16px;padding:22px;box-shadow:0 8px 24px rgba(15,23,42,.05)">
+			<div style="font-size:1.8rem;margin-bottom:8px"><?php echo esc_html( $b['icon'] ); ?></div>
+			<h3 style="margin:0 0 8px;font-size:1.05rem"><?php echo esc_html( $b['title'] ); ?></h3>
+			<p style="margin:0;color:#64748b;font-size:.95rem"><?php echo esc_html( $b['text'] ); ?></p>
+		</div>
+	<?php endforeach; ?>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
 
 function tc_ad_landing_shortcode() {
 	$slug = tc_ad_landing_get_slug();
@@ -268,6 +461,66 @@ function tc_ad_landing_ensure_pantallas_promo_banner() {
 	return false;
 }
 
+function tc_ad_landing_pantallas_hero_highlights( $def ) {
+	if ( ! empty( $def['hero_highlights'] ) && is_array( $def['hero_highlights'] ) ) {
+		return $def['hero_highlights'];
+	}
+	if ( empty( $def['subheadline'] ) ) {
+		return array();
+	}
+	$parts = preg_split( '/\s*[·|]\s*/u', $def['subheadline'] );
+	return array_values(
+		array_filter(
+			array_map(
+				static function ( $part ) {
+					return trim( $part );
+				},
+				$parts
+			)
+		)
+	);
+}
+
+function tc_ad_landing_render_hero_pantallas_mobile( $def, $wa, $msg ) {
+	$highlights = tc_ad_landing_pantallas_hero_highlights( $def );
+	$cta        = ! empty( $def['hero_cta_mobile'] ) ? $def['hero_cta_mobile'] : __( 'Cotizar por WhatsApp', 'techcomputer' );
+	$address    = defined( 'TC_ADDRESS' ) ? TC_ADDRESS : 'Los Militares 5620, Oficina 1801, Las Condes';
+	ob_start();
+	?>
+	<div class="tc-ad-landing__hero-mobile">
+		<div class="tc-ad-landing__hero-mobile-inner">
+			<h1 class="tc-ad-landing__hero-mobile-title"><?php echo esc_html( $def['headline'] ); ?></h1>
+			<?php if ( $highlights ) : ?>
+			<ul class="tc-ad-landing__hero-pills">
+				<?php foreach ( $highlights as $item ) : ?>
+				<li><span class="tc-ad-landing__hero-pill-check" aria-hidden="true">✓</span><?php echo esc_html( $item ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+			<?php endif; ?>
+			<a
+				class="tc-ad-landing__hero-wa-btn"
+				href="<?php echo esc_url( $wa . '?text=' . $msg ); ?>"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<span class="tc-ad-landing__hero-wa-btn-icon" aria-hidden="true">📲</span>
+				<?php echo esc_html( $cta ); ?>
+			</a>
+			<div class="tc-ad-landing__hero-proof">
+				<p class="tc-ad-landing__hero-proof-num">+1.000</p>
+				<p class="tc-ad-landing__hero-proof-text"><?php esc_html_e( 'Clientes Han Confiado en TechComputer', 'techcomputer' ); ?></p>
+				<p class="tc-ad-landing__hero-stars" aria-label="<?php esc_attr_e( '5 estrellas', 'techcomputer' ); ?>">★★★★★</p>
+				<p class="tc-ad-landing__hero-address">
+					<span class="tc-ad-landing__hero-address-icon" aria-hidden="true">📍</span>
+					<?php echo esc_html( $address ); ?>
+				</p>
+			</div>
+		</div>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
 function tc_ad_landing_render_hero_pantallas_promo( $def, $wa, $msg ) {
 	tc_ad_landing_ensure_pantallas_promo_banner();
 	$banner = tc_ad_landing_pantallas_promo_banner_url();
@@ -292,6 +545,7 @@ function tc_ad_landing_render_hero_pantallas_promo( $def, $wa, $msg ) {
 				aria-label="<?php echo esc_attr( $def['cta'] ); ?>"
 			></a>
 		</div>
+		<?php echo tc_ad_landing_render_hero_pantallas_mobile( $def, $wa, $msg ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</section>
 	<?php
 	return ob_get_clean();
@@ -320,6 +574,9 @@ function tc_ad_landing_enqueue_assets() {
 	if ( wp_style_is( 'jkit-elements-main', 'registered' ) ) {
 		wp_enqueue_style( 'jkit-elements-main' );
 	}
+	if ( function_exists( 'tc_enqueue_directions_assets' ) ) {
+		tc_enqueue_directions_assets();
+	}
 
 	$p = function_exists( 'tc_brand_palette' ) ? tc_brand_palette() : array(
 		'primary'    => '#528A31',
@@ -331,7 +588,7 @@ function tc_ad_landing_enqueue_assets() {
 	);
 	$css = '
 .tc-ad-landing{color:' . $p['body'] . ';font-size:1.05rem;line-height:1.65;width:100%;max-width:100%}
-.tc-ad-landing__hero{position:relative;padding:72px 20px 64px;background:linear-gradient(135deg,rgba(30,41,59,.88),rgba(82,138,49,.82)),url("' . esc_url( tc_ad_landing_hero_image_url() ) . '") center/cover no-repeat;color:#fff;text-align:center}
+.tc-ad-landing__hero{position:relative;padding:72px 20px 64px;background:linear-gradient(135deg,rgba(30,41,59,.88),rgba(82,138,49,.82)),url("' . esc_url( get_post_meta( get_queried_object_id(), '_tc_ad_landing_hero_image', true ) ?: tc_ad_landing_hero_image_url() ) . '") center/cover no-repeat;color:#fff;text-align:center}
 .tc-ad-landing__hero-inner{max-width:920px;margin:0 auto}
 .tc-ad-landing__badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);padding:8px 16px;border-radius:999px;font-weight:700;font-size:.9rem;margin-bottom:18px}
 .tc-ad-landing__hero h1{font-size:clamp(2rem,4vw,3rem);line-height:1.15;margin:0 0 14px;color:#fff}
@@ -344,6 +601,22 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__hero-banner-img{display:block;width:100%;height:auto;vertical-align:top}
 .tc-ad-landing__hero-banner-wa{position:absolute;left:4.5%;bottom:28%;width:52%;height:11%;border-radius:999px;cursor:pointer}
 .tc-ad-landing__hero-banner-wa:hover{background:rgba(255,255,255,.04)}
+.tc-ad-landing__hero-mobile{display:none;background:#fff;padding:28px 20px 32px;color:' . $p['dark'] . ';text-align:center}
+.tc-ad-landing__hero-mobile-inner{max-width:420px;margin:0 auto}
+.tc-ad-landing__hero-mobile-title{margin:0 0 22px;font-size:clamp(1.85rem,7vw,2.35rem);line-height:1.12;font-weight:800;color:#111;text-align:center;letter-spacing:-.02em}
+.tc-ad-landing__hero-pills{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
+.tc-ad-landing__hero-pills li{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border-radius:999px;padding:14px 20px;font-size:1rem;font-weight:600;color:#111;box-shadow:0 6px 24px rgba(15,23,42,.08);border:1px solid rgba(15,23,42,.04)}
+.tc-ad-landing__hero-pill-check{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:' . $p['tint'] . ';color:' . $p['primary'] . ';font-size:.85rem;font-weight:800;flex-shrink:0}
+.tc-ad-landing__hero-wa-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin:0 0 28px;padding:16px 20px;border-radius:14px;background:linear-gradient(135deg,#25D366 0%,' . $p['primary'] . ' 100%);color:#fff!important;font-size:1.05rem;font-weight:800;text-decoration:none!important;box-shadow:0 10px 28px rgba(37,211,102,.28);box-sizing:border-box}
+.tc-ad-landing__hero-wa-btn:hover{color:#fff!important;transform:translateY(-1px)}
+.tc-ad-landing__hero-wa-btn-icon{font-size:1.15rem;line-height:1}
+.tc-ad-landing__hero-proof{text-align:center}
+.tc-ad-landing__hero-proof-num{margin:0 0 6px;font-size:clamp(2.4rem,10vw,3rem);line-height:1;font-weight:800;color:' . $p['primary_d'] . '}
+.tc-ad-landing__hero-proof-text{margin:0 0 10px;font-size:1rem;font-weight:600;color:#111;line-height:1.35}
+.tc-ad-landing__hero-stars{margin:0 0 14px;font-size:1.35rem;line-height:1;letter-spacing:.12em;color:#f5b301}
+.tc-ad-landing__hero-address{margin:0;font-size:.92rem;line-height:1.45;color:' . $p['body'] . ';display:flex;align-items:flex-start;justify-content:center;gap:6px;text-align:left;max-width:320px;margin-left:auto;margin-right:auto}
+.tc-ad-landing__hero-address-icon{flex-shrink:0;line-height:1.35}
+@media(max-width:767px){.tc-ad-landing__hero-mobile{display:block}}
 .tc-ad-landing__section{max-width:1140px;margin:0 auto;padding:48px 20px;width:100%;box-sizing:border-box}
 .tc-ad-landing__section--tint{background:' . $p['tint'] . ';width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding:48px max(20px,calc(50vw - 570px))}
 .tc-ad-landing__section h2{color:' . $p['dark'] . ';font-size:clamp(1.5rem,3vw,2rem);margin:0 0 12px;text-align:center}
@@ -377,6 +650,8 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__location a:hover{text-decoration:underline!important}
 .tc-ad-landing__faq details{background:#fff;border:1px solid #e8edf2;border-radius:12px;padding:14px 18px;margin-bottom:10px}
 .tc-ad-landing__faq summary{cursor:pointer;font-weight:700;color:' . $p['dark'] . '}
+.tc-ad-landing__section--directions{padding:0;max-width:none}
+.tc-ad-landing__section--directions .tc-directions-section{margin:0;width:100%;max-width:100%;box-sizing:border-box}
 .tc-ad-landing__form-split{display:grid;gap:28px 32px;align-items:start;max-width:1140px;margin:0 auto}
 @media(min-width:900px){.tc-ad-landing__form-split{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}}
 .tc-ad-landing__video-wrap{display:flex;justify-content:center;align-items:flex-start;background:#111;border-radius:18px;overflow:hidden;box-shadow:0 12px 40px rgba(15,23,42,.12);padding:12px}
@@ -384,6 +659,7 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__form-wrap{max-width:none;margin:0;background:#fff;border-radius:18px;padding:28px;box-shadow:0 12px 40px rgba(15,23,42,.08)}
 .tc-ad-landing__form-wrap h2{text-align:left;margin-bottom:8px}
 .tc-ad-landing__form-lead{margin:0 0 20px;color:#64748b}
+body.tc-ad-landing-page .site-header,body.tc-ad-landing-page header.site-header,body.tc-ad-landing-page .site-footer,body.tc-ad-landing-page footer.site-footer,body.tc-ad-landing-page .hfe-before-footer-wrap,body.tc-ad-landing-page .page-header{display:none!important}
 body.tc-ad-landing-page{overflow-x:hidden}
 body.tc-ad-landing-page .site-main,body.tc-ad-landing-page .site-main .page-content,body.tc-ad-landing-page .site-main .entry-content{max-width:none!important;width:100%!important;padding-left:0!important;padding-right:0!important}
 body.tc-ad-landing-page .site-main .page-content,body.tc-ad-landing-page .site-main{padding-top:0}
@@ -397,8 +673,15 @@ body.tc-ad-landing-page--pantallas .tc-ad-landing__hero--pantallas{width:100vw;m
 	wp_add_inline_style( 'tc-ad-landing', $css );
 }
 
-function tc_ad_landing_render_form_video() {
-	$url = TC_AD_LANDING_VIDEO_URL;
+function tc_ad_landing_render_form_video( $def = array() ) {
+	$page_url = get_post_meta( get_the_ID(), '_tc_ad_landing_video_url', true );
+	if ( $page_url ) {
+		$url = $page_url;
+	} elseif ( ! empty( $def['video_url'] ) ) {
+		$url = $def['video_url'];
+	} else {
+		$url = TC_AD_LANDING_VIDEO_URL;
+	}
 	ob_start();
 	?>
 	<div class="tc-ad-landing__video-wrap">
@@ -812,7 +1095,7 @@ function tc_ad_landing_render( $slug ) {
 
 		<section class="tc-ad-landing__section">
 			<div class="tc-ad-landing__form-split">
-				<?php echo tc_ad_landing_render_form_video(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<?php echo tc_ad_landing_render_form_video( $def ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<div class="tc-ad-landing__form-wrap">
 					<h2><?php esc_html_e( 'Ingresa tus datos y modelo de equipo', 'techcomputer' ); ?></h2>
 					<p class="tc-ad-landing__form-lead"><?php esc_html_e( 'Déjanos tus datos y nuestro equipo te contactará de inmediato.', 'techcomputer' ); ?></p>
@@ -869,8 +1152,8 @@ function tc_ad_landing_render( $slug ) {
 		</section>
 
 		<?php if ( function_exists( 'tc_render_directions_section' ) ) : ?>
-		<section class="tc-ad-landing__section">
-			<?php tc_render_directions_section(); ?>
+		<section class="tc-ad-landing__section tc-ad-landing__section--directions">
+			<?php tc_render_directions_section( true ); ?>
 		</section>
 		<?php endif; ?>
 	</div>
@@ -887,18 +1170,24 @@ function tc_ad_landing_maybe_create_pages() {
 		if ( ! $page ) {
 			wp_insert_post(
 				array(
-					'post_title'   => $def['title'],
-					'post_name'    => $slug,
-					'post_type'    => 'page',
-					'post_status'  => 'publish',
-					'post_content' => '[tc_ad_landing]',
+					'post_title'        => $def['title'],
+					'post_name'         => $slug,
+					'post_type'         => 'page',
+					'post_status'       => 'publish',
+					'post_content'      => '[tc_ad_landing]',
+					'page_template'     => 'elementor_canvas',
+					'comment_status'    => 'closed',
+					'ping_status'       => 'closed',
 				)
 			);
 		} else {
 			wp_update_post(
 				array(
-					'ID'           => $page->ID,
-					'post_content' => '[tc_ad_landing]',
+					'ID'             => $page->ID,
+					'post_content'   => '[tc_ad_landing]',
+					'page_template'  => 'elementor_canvas',
+					'comment_status' => 'closed',
+					'ping_status'    => 'closed',
 				)
 			);
 		}
@@ -907,9 +1196,20 @@ function tc_ad_landing_maybe_create_pages() {
 }
 
 add_filter( 'hello_elementor_page_title', 'tc_ad_landing_hide_page_title' );
+add_filter( 'hello_elementor_header_footer_display', 'tc_ad_landing_hide_theme_chrome' );
+add_filter( 'hfe_header_enabled', 'tc_ad_landing_hide_theme_chrome' );
+add_filter( 'hfe_footer_enabled', 'tc_ad_landing_hide_theme_chrome' );
+add_filter( 'hfe_before_footer_enabled', 'tc_ad_landing_hide_theme_chrome' );
 add_filter( 'body_class', 'tc_ad_landing_body_class' );
 
 function tc_ad_landing_hide_page_title( $show ) {
+	return tc_ad_landing_get_slug() ? false : $show;
+}
+
+/**
+ * @param bool $show Mostrar header/footer del tema o HFE.
+ */
+function tc_ad_landing_hide_theme_chrome( $show ) {
 	return tc_ad_landing_get_slug() ? false : $show;
 }
 
