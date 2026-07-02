@@ -32,12 +32,14 @@ add_action( 'init', 'tc_maybe_runtime_sync', 20 );
 add_action( 'elementor/page_templates/canvas/before_content', 'tc_prevent_double_hfe_header_in_editor', 0 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_brand_styles', 99 );
 add_action( 'elementor/editor/after_enqueue_styles', 'tc_enqueue_brand_styles' );
+add_action( 'wp_head', 'tc_local_business_schema', 5 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_directions_assets', 100 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_shop_catalog_assets', 101 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_single_product_assets', 102 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_home_responsive_assets', 9999 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_header_mobile_fix', 99999 );
 add_action( 'wp_enqueue_scripts', 'tc_enqueue_header_mobile_js', 100000 );
+add_action( 'wp_enqueue_scripts', 'tc_enqueue_footer_mobile_compact', 100001 );
 add_action( 'wp', 'tc_single_product_bootstrap' );
 add_filter( 'the_content', 'tc_append_directions_to_home', 99 );
 add_shortcode( 'tc_shop_catalog', 'tc_shop_catalog_shortcode' );
@@ -1274,6 +1276,72 @@ function tc_enqueue_header_mobile_fix() {
 	wp_register_style( 'tc-header-mobile-fix', false, $deps, TC_SETUP_VERSION );
 	wp_enqueue_style( 'tc-header-mobile-fix' );
 	wp_add_inline_style( 'tc-header-mobile-fix', tc_header_mobile_css() );
+}
+
+/** Footer (Elementor post 1957) se ve muy "espaciado" en móvil: reduce padding y gaps, y pone los links en 2 columnas. */
+function tc_footer_mobile_compact_css() {
+	return '@media(max-width:767px){
+.elementor-element-6186d49d{--padding-top:28px;--padding-bottom:28px;--gap:14px;padding-top:28px!important;padding-bottom:28px!important;row-gap:14px!important;gap:14px!important;}
+.elementor-element-171af5dc,.elementor-element-45ed179f,.elementor-element-2f33dbfe,.elementor-element-767b538a{--gap:8px;row-gap:8px!important;gap:8px!important;}
+.elementor-element-78fbb57b .elementor-icon-list-items,
+.elementor-element-365b2e7 .elementor-icon-list-items{display:grid!important;grid-template-columns:repeat(2,1fr)!important;column-gap:10px!important;row-gap:8px!important;}
+.elementor-element-78fbb57b .elementor-icon-list-items .elementor-icon-list-item,
+.elementor-element-365b2e7 .elementor-icon-list-items .elementor-icon-list-item{justify-content:center!important;padding-block-end:0!important;margin-block-start:0!important;}
+.elementor-element-510d60b8 .elementor-icon-list-items:not(.elementor-inline-items) .elementor-icon-list-item:not(:last-child){padding-block-end:5px!important;}
+.elementor-element-510d60b8 .elementor-icon-list-items:not(.elementor-inline-items) .elementor-icon-list-item:not(:first-child){margin-block-start:5px!important;}
+.elementor-element-5df18ce{margin-top:6px!important;}
+}';
+}
+
+function tc_enqueue_footer_mobile_compact() {
+	if ( is_admin() ) {
+		return;
+	}
+	wp_register_style( 'tc-footer-mobile-compact', false, array(), TC_SETUP_VERSION );
+	wp_enqueue_style( 'tc-footer-mobile-compact' );
+	wp_add_inline_style( 'tc-footer-mobile-compact', tc_footer_mobile_compact_css() );
+}
+
+function tc_local_business_schema() {
+	$schema = array(
+		'@context'        => 'https://schema.org',
+		'@type'           => array( 'LocalBusiness', 'ComputerRepair' ),
+		'name'            => 'TechComputer',
+		'url'             => 'https://pt.restify.cl',
+		'telephone'       => TC_PHONE,
+		'email'           => TC_EMAIL,
+		'address'         => array(
+			'@type'           => 'PostalAddress',
+			'streetAddress'   => 'Los Militares 5620, Oficina 1801',
+			'addressLocality' => 'Las Condes',
+			'addressRegion'   => 'Región Metropolitana',
+			'addressCountry'  => 'CL',
+		),
+		'geo'             => array(
+			'@type'     => 'GeoCoordinates',
+			'latitude'  => '-33.4062824',
+			'longitude' => '-70.5754636',
+		),
+		'openingHoursSpecification' => array(
+			array(
+				'@type'     => 'OpeningHoursSpecification',
+				'dayOfWeek' => array( 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' ),
+				'opens'     => '10:00',
+				'closes'    => '17:30',
+			),
+			array(
+				'@type'     => 'OpeningHoursSpecification',
+				'dayOfWeek' => array( 'Saturday' ),
+				'opens'     => '11:00',
+				'closes'    => '15:00',
+			),
+		),
+		'priceRange'      => '$$',
+		'currenciesAccepted' => 'CLP',
+		'paymentAccepted' => 'Cash, Credit Card, Debit Card',
+		'areaServed'      => 'Las Condes, Santiago, Chile',
+	);
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 }
 
 function tc_enqueue_brand_styles() {
@@ -3681,8 +3749,8 @@ function tc_directions_config() {
 				'id'    => 'metro',
 				'label' => 'Llega en Metro',
 				'icon'  => tc_directions_resolve_upload( 'logo1.png', $uploads . '/logo1.png' ),
-				'type'  => 'video',
-				'url'   => tc_directions_resolve_upload( 'Como-Llegar-Metro.mp4', $uploads . '/Como-Llegar-Metro.mp4' ),
+				'type'  => 'external',
+				'url'   => 'https://www.google.com/maps/dir/?api=1&destination=Los+Militares+5620,+Las+Condes,+Santiago&travelmode=transit',
 			),
 		),
 	);
@@ -3693,6 +3761,9 @@ function tc_should_show_directions_section() {
 		return true;
 	}
 	if ( function_exists( 'tc_contact_page_is_active' ) && tc_contact_page_is_active() ) {
+		return true;
+	}
+	if ( function_exists( 'tc_ad_landing_get_slug' ) && tc_ad_landing_get_slug() ) {
 		return true;
 	}
 	return false;
@@ -3721,7 +3792,6 @@ function tc_enqueue_directions_assets() {
 .tc-directions-section__title{margin:0 0 8px;font-size:clamp(1.5rem,3vw,2rem);color:' . $p['dark'] . ';font-weight:700}
 .tc-directions-section__subtitle{margin:0;color:' . $p['muted'] . ';font-size:1rem}
 .tc-directions-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-bottom:36px}
-@media(max-width:767px){.tc-directions-section{padding:40px 16px}.tc-directions-cards{grid-template-columns:1fr;max-width:none;margin-left:0;margin-right:0}.tc-directions-map iframe{height:min(56vw,320px)}.tc-directions-modal{padding:12px}.tc-directions-modal__close{top:8px;right:8px}}
 .tc-directions-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 20px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(17,17,17,.06);transition:transform .2s ease,box-shadow .2s ease;text-decoration:none;color:inherit;border:0;cursor:pointer;font:inherit;width:100%}
 .tc-directions-card:hover,.tc-directions-card:focus{transform:translateY(-4px);box-shadow:0 12px 32px rgba(82,138,49,.15);outline:none}
 .tc-directions-card__icon{width:88px;height:88px;object-fit:contain;margin-bottom:16px}
@@ -3733,7 +3803,8 @@ function tc_enqueue_directions_assets() {
 .tc-directions-modal__dialog{position:relative;width:min(960px,100%);background:#000;border-radius:12px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.45)}
 .tc-directions-modal__close{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:' . $p['dark'] . ';font-size:24px;line-height:1;cursor:pointer}
 .tc-directions-modal__close:hover{background:#fff}
-.tc-directions-modal__video{display:block;width:100%;max-height:80vh}';
+.tc-directions-modal__video{display:block;width:100%;max-height:80vh}
+@media(max-width:767px){.tc-directions-section{padding:40px 16px}.tc-directions-cards{grid-template-columns:1fr;gap:10px;max-width:420px;margin-left:auto;margin-right:auto}.tc-directions-card{flex-direction:row;justify-content:flex-start;align-items:center;text-align:left;padding:14px 18px;gap:16px}.tc-directions-card__icon{width:44px;height:44px;margin-bottom:0;flex-shrink:0}.tc-directions-card__label{font-size:.95rem}.tc-directions-map iframe{height:min(56vw,320px)}.tc-directions-modal{padding:12px}.tc-directions-modal__close{top:8px;right:8px}}';
 	wp_register_style( 'tc-directions', false, array(), TC_SETUP_VERSION );
 	wp_enqueue_style( 'tc-directions' );
 	wp_add_inline_style( 'tc-directions', $css );
@@ -3751,6 +3822,12 @@ function tc_render_directions_section( $force = false ) {
 		return;
 	}
 	$config = tc_directions_config();
+	static $css_printed = false;
+	if ( ! $css_printed ) {
+		$css_printed = true;
+		$p = tc_brand_palette();
+		echo '<style id="tc-directions-css">.tc-directions-section{padding:56px 20px;background:' . esc_attr( $p['section'] ) . ';font-family:inherit}.tc-directions-section__inner{max-width:1140px;margin:0 auto}.tc-directions-section__header{text-align:center;margin-bottom:36px}.tc-directions-section__title{margin:0 0 8px;font-size:clamp(1.5rem,3vw,2rem);color:' . esc_attr( $p['dark'] ) . ';font-weight:700}.tc-directions-section__subtitle{margin:0;color:' . esc_attr( $p['muted'] ) . ';font-size:1rem}.tc-directions-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-bottom:36px}.tc-directions-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 20px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(17,17,17,.06);transition:transform .2s ease,box-shadow .2s ease;text-decoration:none;color:inherit;border:0;cursor:pointer;font:inherit;width:100%}.tc-directions-card:hover,.tc-directions-card:focus{transform:translateY(-4px);box-shadow:0 12px 32px rgba(82,138,49,.15);outline:none}.tc-directions-card__icon{width:88px;height:88px;object-fit:contain;margin-bottom:16px}.tc-directions-card__label{margin:0;font-size:1rem;font-weight:600;color:' . esc_attr( $p['dark'] ) . '}.tc-directions-map{border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(17,17,17,.08)}.tc-directions-map iframe{display:block;width:100%;height:450px;border:0}.tc-directions-modal{position:fixed;inset:0;z-index:999999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(17,17,17,.82)}.tc-directions-modal.is-open{display:flex}.tc-directions-modal__dialog{position:relative;width:min(960px,100%);background:#000;border-radius:12px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.45)}.tc-directions-modal__close{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:' . esc_attr( $p['dark'] ) . ';font-size:24px;line-height:1;cursor:pointer}.tc-directions-modal__close:hover{background:#fff}.tc-directions-modal__video{display:block;width:100%;max-height:80vh}@media(max-width:767px){.tc-directions-section{padding:40px 16px}.tc-directions-cards{grid-template-columns:1fr;gap:10px;max-width:420px;margin-left:auto;margin-right:auto}.tc-directions-card{flex-direction:row;justify-content:flex-start;align-items:center;text-align:left;padding:14px 18px;gap:16px}.tc-directions-card__icon{width:44px;height:44px;margin-bottom:0;flex-shrink:0}.tc-directions-card__label{font-size:.95rem}.tc-directions-map iframe{height:min(56vw,320px)}.tc-directions-modal{padding:12px}.tc-directions-modal__close{top:8px;right:8px}}</style>' . "\n";
+	}
 	?>
 	<section class="tc-directions-section" aria-labelledby="tc-directions-title">
 		<div class="tc-directions-section__inner">
@@ -3787,12 +3864,16 @@ function tc_render_directions_section( $force = false ) {
 			</div>
 		</div>
 	</section>
+	<?php
+	$has_video_card = ! empty( array_filter( $config['cards'], fn( $c ) => 'video' === $c['type'] ) );
+	if ( $has_video_card ) : ?>
 	<div id="tc-directions-modal" class="tc-directions-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Video: cómo llegar en metro', 'techcomputer' ); ?>">
 		<div class="tc-directions-modal__dialog">
 			<button type="button" class="tc-directions-modal__close" aria-label="<?php esc_attr_e( 'Cerrar', 'techcomputer' ); ?>">&times;</button>
 			<video class="tc-directions-modal__video" controls playsinline preload="none"></video>
 		</div>
 	</div>
+	<?php endif; ?>
 	<?php
 }
 
@@ -4260,6 +4341,48 @@ function tc_catalog_product_card_category( $product_id ) {
 	return '' !== $fallback ? strtoupper( $fallback ) : '';
 }
 
+/** Botón "Consultar por WhatsApp", reutilizable en todas las grillas de productos WooCommerce del sitio. */
+function tc_woocommerce_wa_consult_url( $product ) {
+	$name = ( $product instanceof WC_Product ) ? $product->get_name() : '';
+	$msg  = $name ? sprintf( 'Hola, quiero consultar sobre: %s', $name ) : 'Hola, quiero hacer una consulta.';
+	$wa   = defined( 'TC_WHATSAPP' ) ? TC_WHATSAPP : 'https://wa.me/56932194619';
+	return $wa . '?text=' . rawurlencode( $msg );
+}
+
+function tc_woocommerce_wa_consult_button( $product ) {
+	if ( ! ( $product instanceof WC_Product ) ) {
+		return '';
+	}
+	return sprintf(
+		'<a href="%1$s" class="button tc-wa-consult-btn" target="_blank" rel="nofollow noopener noreferrer"><span class="tc-wa-consult-btn__icon" aria-hidden="true">📲</span>%2$s</a>',
+		esc_url( tc_woocommerce_wa_consult_url( $product ) ),
+		esc_html__( 'Consultar por WhatsApp', 'techcomputer' )
+	);
+}
+
+/** Agrega el botón de WhatsApp junto al "Agregar al carrito" en las grillas nativas de WooCommerce (home, categorías, relacionados, etc.). */
+function tc_render_woocommerce_wa_consult_button() {
+	global $product;
+	echo tc_woocommerce_wa_consult_button( $product ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+add_action( 'woocommerce_after_shop_loop_item', 'tc_render_woocommerce_wa_consult_button', 15 );
+
+function tc_woocommerce_wa_consult_css() {
+	return '.tc-wa-consult-btn{display:flex!important;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:8px!important;padding:10px 14px;border-radius:10px;font-size:.85rem;font-weight:700;text-decoration:none!important;background:#25D366!important;border:1px solid #25D366!important;color:#fff!important;box-sizing:border-box}
+.tc-wa-consult-btn:hover{background:#1ebe5b!important;border-color:#1ebe5b!important;color:#fff!important}
+.tc-wa-consult-btn__icon{font-size:1.05em;line-height:1}';
+}
+
+function tc_enqueue_woocommerce_wa_consult_button_css() {
+	if ( is_admin() ) {
+		return;
+	}
+	wp_register_style( 'tc-wa-consult-btn', false, array(), TC_SETUP_VERSION );
+	wp_enqueue_style( 'tc-wa-consult-btn' );
+	wp_add_inline_style( 'tc-wa-consult-btn', tc_woocommerce_wa_consult_css() );
+}
+add_action( 'wp_enqueue_scripts', 'tc_enqueue_woocommerce_wa_consult_button_css', 100002 );
+
 function tc_catalog_render_product_card( $product ) {
 	if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
 		return;
@@ -4268,21 +4391,57 @@ function tc_catalog_render_product_card( $product ) {
 	$category_label = tc_catalog_product_card_category( $product->get_id() );
 	?>
 	<li <?php wc_product_class( 'jkit-product-block', $product ); ?>>
-		<a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="jkit-product">
-			<div class="product-link">
-				<?php if ( $product->is_on_sale() ) : ?>
-					<span class="onsale text"><?php esc_html_e( 'Oferta', 'techcomputer' ); ?></span>
+		<div class="tc-catalog-product-card">
+			<a href="<?php echo esc_url( $product->get_permalink() ); ?>" class="jkit-product">
+				<div class="product-link">
+					<?php if ( $product->is_on_sale() ) : ?>
+						<span class="onsale text"><?php esc_html_e( 'Oferta', 'techcomputer' ); ?></span>
+					<?php endif; ?>
+					<?php echo $product->get_image( 'woocommerce_thumbnail', array( 'class' => 'wp-post-image product-image' ) ); ?>
+				</div>
+				<?php if ( $category_label ) : ?>
+					<div class="product-categories"><object><span><?php echo esc_html( $category_label ); ?></span></object></div>
 				<?php endif; ?>
-				<?php echo $product->get_image( 'woocommerce_thumbnail', array( 'class' => 'wp-post-image product-image' ) ); ?>
+				<h3 class="product-title"><?php echo esc_html( $product->get_name() ); ?></h3>
+				<?php if ( $price_html = $product->get_price_html() ) : ?>
+					<span class="price"><?php echo wp_kses_post( $price_html ); ?></span>
+				<?php endif; ?>
+			</a>
+			<div class="tc-catalog-product-actions">
+				<?php
+				$button_classes = array_filter(
+					array(
+						'button',
+						'product_type_' . $product->get_type(),
+						$product->is_purchasable() && $product->is_in_stock() ? 'add_to_cart_button' : '',
+						$product->supports( 'ajax_add_to_cart' ) && $product->is_purchasable() && $product->is_in_stock() ? 'ajax_add_to_cart' : '',
+					)
+				);
+				$button_attrs = array(
+					'data-product_id'  => $product->get_id(),
+					'data-product_sku' => $product->get_sku(),
+					'aria-label'       => $product->add_to_cart_description(),
+					'rel'              => 'nofollow',
+				);
+				echo apply_filters(
+					'woocommerce_loop_add_to_cart_link',
+					sprintf(
+						'<a href="%s" data-quantity="1" class="%s" %s>%s</a>',
+						esc_url( $product->add_to_cart_url() ),
+						esc_attr( implode( ' ', $button_classes ) ),
+						wc_implode_html_attributes( $button_attrs ),
+						esc_html( $product->add_to_cart_text() )
+					),
+					$product,
+					array(
+						'class'      => implode( ' ', $button_classes ),
+						'attributes' => $button_attrs,
+					)
+				);
+				echo tc_woocommerce_wa_consult_button( $product ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				?>
 			</div>
-			<?php if ( $category_label ) : ?>
-				<div class="product-categories"><object><span><?php echo esc_html( $category_label ); ?></span></object></div>
-			<?php endif; ?>
-			<h3 class="product-title"><?php echo esc_html( $product->get_name() ); ?></h3>
-			<?php if ( $price_html = $product->get_price_html() ) : ?>
-				<span class="price"><?php echo wp_kses_post( $price_html ); ?></span>
-			<?php endif; ?>
-		</a>
+		</div>
 	</li>
 	<?php
 }
@@ -4498,6 +4657,13 @@ body.woocommerce-shop .woocommerce-products-header,body.post-type-archive-produc
 .tc-catalog-woocommerce .price{font-size:14px;font-weight:400;line-height:1.5;color:' . $p['muted'] . '}
 .tc-catalog-woocommerce .price del{opacity:.75;margin-right:6px;font-weight:400}
 .tc-catalog-woocommerce .price ins{text-decoration:none;color:' . $p['primary'] . ';font-weight:600}
+.tc-catalog-woocommerce .tc-catalog-product-card{display:flex;flex-direction:column;height:100%}
+.tc-catalog-woocommerce .tc-catalog-product-card .jkit-product{flex:1 1 auto}
+.tc-catalog-woocommerce .tc-catalog-product-actions{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.tc-catalog-woocommerce .tc-catalog-product-actions .button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0;padding:10px 14px;border-radius:10px;font-size:.85rem;font-weight:700;text-decoration:none;box-sizing:border-box}
+.tc-catalog-woocommerce .tc-catalog-product-actions .add_to_cart_button{background:' . $p['primary'] . ';border:1px solid ' . $p['primary'] . ';color:#fff}
+.tc-catalog-woocommerce .tc-catalog-product-actions .add_to_cart_button:hover{background:' . $p['primary_d'] . ';border-color:' . $p['primary_d'] . '}
+.tc-catalog-woocommerce .tc-catalog-product-actions .tc-wa-consult-btn{margin-top:0!important}
 .tc-catalog-empty{padding:32px 24px;background:' . $p['card'] . ';border-radius:20px;text-align:center;color:' . $p['muted'] . '}
 .tc-catalog-pagination{margin-top:40px;text-align:center}
 @media(max-width:1024px){.tc-catalog-woocommerce .jkit-products.tc-catalog-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}}

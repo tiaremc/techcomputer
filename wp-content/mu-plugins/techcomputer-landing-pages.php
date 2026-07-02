@@ -14,9 +14,11 @@ define( 'TC_AD_LANDING_VIDEO_URL', 'https://techcomputer.cl/wp-content/uploads/2
 add_action( 'init', 'tc_ad_landing_register_shortcode' );
 add_action( 'init', 'tc_ad_landing_maybe_create_pages', 20 );
 add_action( 'wp_enqueue_scripts', 'tc_ad_landing_enqueue_assets' );
-add_filter( 'the_content', 'tc_ad_landing_filter_content', 5 );
+add_filter( 'the_content', 'tc_ad_landing_filter_content', 11 );
 add_filter( 'document_title_parts', 'tc_ad_landing_document_title' );
 add_action( 'wp_head', 'tc_ad_landing_meta_description', 1 );
+add_action( 'wp_head', 'tc_ad_landing_faq_schema', 2 );
+add_action( 'wp_head', 'tc_ad_landing_canonical_tag', 3 );
 add_action( 'add_meta_boxes', 'tc_ad_landing_add_video_metabox' );
 add_action( 'save_post', 'tc_ad_landing_save_video_metabox' );
 add_action( 'admin_enqueue_scripts', 'tc_ad_landing_admin_scripts' );
@@ -135,7 +137,7 @@ function tc_ad_landing_definitions() {
 	return array(
 		'pantallas-notebook'              => array(
 			'title'       => 'Pantallas Notebook',
-			'meta'        => 'Cambio de pantalla notebook en Santiago con garantía de 6 meses. Todas las marcas, instalación en 30 minutos.',
+			'meta'        => 'Cambia la pantalla de tu notebook en 30 minutos · Garantía escrita · HP, Lenovo, Dell, Asus, Acer · Las Condes, Santiago.',
 			'badge'       => 'Instalación en 30 minutos',
 			'headline'    => 'Cambio de Pantalla Notebook',
 			'subheadline' => 'Garantía de 6 meses · Todas las marcas · Técnicos especializados',
@@ -148,7 +150,7 @@ function tc_ad_landing_definitions() {
 		),
 		'pantalla-para-notebook-market'   => array(
 			'title'       => 'Pantalla para Notebook Market',
-			'meta'        => 'Pantallas para notebook en Santiago. Repuestos originales y compatibles con instalación profesional y garantía.',
+			'meta'        => 'Pantallas para notebook en Santiago con instalación profesional. Cotiza gratis · Garantía escrita · Las Condes.',
 			'badge'       => 'Repuestos con garantía',
 			'headline'    => 'Pantallas para Notebook en Santiago',
 			'subheadline' => 'Stock por marca y modelo · Instalación rápida · Las Condes',
@@ -161,7 +163,7 @@ function tc_ad_landing_definitions() {
 		),
 		'cambio-de-pantalla-notebook'     => array(
 			'title'       => 'Cambio de Pantalla Notebook',
-			'meta'        => 'Cambio de pantalla notebook en 30 minutos. Servicio técnico en Las Condes con garantía escrita.',
+			'meta'        => 'Cambio de pantalla notebook en 30 minutos · Garantía escrita · Diagnóstico profesional · Las Condes, Santiago. Cotiza ahora.',
 			'badge'       => 'Servicio express',
 			'headline'    => 'Cambio de Pantalla Notebook en 30 Minutos',
 			'subheadline' => 'Diagnóstico profesional · Repuestos verificados · Garantía escrita',
@@ -174,9 +176,9 @@ function tc_ad_landing_definitions() {
 		),
 		'bisagras-para-notebook'          => array(
 			'title'       => 'Bisagras para Notebook',
-			'meta'        => 'Reparación de bisagras notebook en Las Condes. HP, Lenovo, Dell, Asus y Acer con garantía escrita.',
+			'meta'        => 'Reparación de bisagras para notebook en Las Condes · HP, Lenovo, Dell, Asus, Acer · Garantía escrita · Cotiza en 2 minutos.',
 			'badge'       => 'Reparación profesional con garantía',
-			'headline'    => '¿La bisagra de tu notebook está rota?',
+			'headline'    => 'Reparación de Bisagras para Notebook en Santiago',
 			'subheadline' => 'Reparamos bisagras quebradas, tapas sueltas y carcasas dañadas',
 			'cta'         => 'Cotizar reparación de bisagras',
 			'type'        => 'bisagras',
@@ -187,7 +189,7 @@ function tc_ad_landing_definitions() {
 		),
 		'mantencion-notebook'             => array(
 			'title'       => 'Mantención Notebook',
-			'meta'        => 'Mantención preventiva de notebook en Santiago. Limpieza interna, pasta térmica y revisión profesional.',
+			'meta'        => 'Mantención preventiva de notebook en Santiago · Limpieza interna, pasta térmica y revisión profesional · Garantía escrita · Las Condes.',
 			'badge'       => 'Mantención preventiva',
 			'headline'    => 'Mantención Profesional de Notebook',
 			'subheadline' => 'Limpieza interna · Pasta térmica · Revisión completa del equipo',
@@ -201,7 +203,7 @@ function tc_ad_landing_definitions() {
 		'reparacion-notebook'             => array(
 			'video_url'   => content_url( 'uploads/2026/06/reparacion-notebook.mp4' ),
 			'title'       => 'Reparación Notebook',
-			'meta'        => 'Reparación notebook en Las Condes y Santiago. Pantallas, SSD, teclado, bisagras y placa madre con garantía.',
+			'meta'        => 'Reparación notebook en Las Condes · Pantallas, SSD, teclado, bisagras, placa madre · Diagnóstico gratis · Garantía escrita. Cotiza hoy.',
 			'badge'       => 'Servicio técnico especializado',
 			'headline'    => 'Reparación de Notebook en Santiago',
 			'subheadline' => 'Pantallas · SSD · Teclado · Bisagras · Placa madre',
@@ -414,6 +416,51 @@ function tc_ad_landing_meta_description() {
 	echo '<meta name="description" content="' . esc_attr( $def['meta'] ) . '" />' . "\n";
 }
 
+function tc_ad_landing_faq_schema() {
+	$slug = tc_ad_landing_get_slug();
+	if ( ! $slug ) {
+		return;
+	}
+	$def  = tc_ad_landing_definitions()[ $slug ];
+	$faqs = $def['faq'] ?? array();
+	if ( empty( $faqs ) ) {
+		return;
+	}
+	$entities = array();
+	foreach ( $faqs as $item ) {
+		$entities[] = array(
+			'@type'          => 'Question',
+			'name'           => $item['q'],
+			'acceptedAnswer' => array(
+				'@type' => 'Answer',
+				'text'  => $item['a'],
+			),
+		);
+	}
+	$schema = array(
+		'@context'   => 'https://schema.org',
+		'@type'      => 'FAQPage',
+		'mainEntity' => $entities,
+	);
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+}
+
+function tc_ad_landing_canonical_tag() {
+	$slug = tc_ad_landing_get_slug();
+	if ( ! $slug ) {
+		return;
+	}
+	$pantallas_variants = array( 'pantalla-para-notebook-market', 'cambio-de-pantalla-notebook' );
+	if ( in_array( $slug, $pantallas_variants, true ) ) {
+		$canonical = home_url( '/pantallas-notebook/' );
+	} else {
+		$canonical = get_permalink();
+	}
+	if ( $canonical ) {
+		echo '<link rel="canonical" href="' . esc_url( $canonical ) . '" />' . "\n";
+	}
+}
+
 function tc_ad_landing_hero_image_url() {
 	if ( function_exists( 'tc_single_product_hero_banner_url' ) ) {
 		return tc_single_product_hero_banner_url();
@@ -426,8 +473,8 @@ function tc_ad_landing_hero_image_url() {
  */
 function tc_ad_landing_pantallas_promo_banner_candidates() {
 	return array(
-		WP_CONTENT_DIR . '/uploads/2026/06/tc-landing-pantallas-promo.png',
-		WP_CONTENT_DIR . '/mu-plugins/assets/tc-landing-pantallas-promo.png',
+		WP_CONTENT_DIR . '/uploads/2026/06/tc-landing-pantallas-promo.jpg',
+		WP_CONTENT_DIR . '/mu-plugins/assets/tc-landing-pantallas-promo.jpg',
 	);
 }
 
@@ -441,7 +488,7 @@ function tc_ad_landing_pantallas_promo_banner_url() {
 			return content_url( str_replace( WP_CONTENT_DIR, '', $path ) );
 		}
 	}
-	return content_url( 'mu-plugins/assets/tc-landing-pantallas-promo.png' );
+	return content_url( 'mu-plugins/assets/tc-landing-pantallas-promo.jpg' );
 }
 
 function tc_ad_landing_ensure_pantallas_promo_banner() {
@@ -454,7 +501,7 @@ function tc_ad_landing_ensure_pantallas_promo_banner() {
 	if ( ! wp_mkdir_p( $dir ) ) {
 		return false;
 	}
-	$dest = trailingslashit( $dir ) . 'tc-landing-pantallas-promo.png';
+	$dest = trailingslashit( $dir ) . 'tc-landing-pantallas-promo.jpg';
 	if ( file_exists( $dest ) ) {
 		return true;
 	}
@@ -603,7 +650,7 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__hero-banner-wa:hover{background:rgba(255,255,255,.04)}
 .tc-ad-landing__hero-mobile{display:none;background:#fff;padding:28px 20px 32px;color:' . $p['dark'] . ';text-align:center}
 .tc-ad-landing__hero-mobile-inner{max-width:420px;margin:0 auto}
-.tc-ad-landing__hero-mobile-title{margin:0 0 22px;font-size:clamp(1.85rem,7vw,2.35rem);line-height:1.12;font-weight:800;color:#111;text-align:center;letter-spacing:-.02em}
+.tc-ad-landing__hero-mobile .tc-ad-landing__hero-mobile-title{margin:0 0 22px;font-size:clamp(1.85rem,7vw,2.35rem);line-height:1.12;font-weight:800;color:#111;text-align:center;letter-spacing:-.02em}
 .tc-ad-landing__hero-pills{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
 .tc-ad-landing__hero-pills li{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border-radius:999px;padding:14px 20px;font-size:1rem;font-weight:600;color:#111;box-shadow:0 6px 24px rgba(15,23,42,.08);border:1px solid rgba(15,23,42,.04)}
 .tc-ad-landing__hero-pill-check{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:' . $p['tint'] . ';color:' . $p['primary'] . ';font-size:.85rem;font-weight:800;flex-shrink:0}
@@ -642,9 +689,11 @@ function tc_ad_landing_enqueue_assets() {
 .tc-ad-landing__products .product-categories,.tc-ad-landing__products .product-title,.tc-ad-landing__products .price{letter-spacing:normal!important;word-spacing:normal!important}
 .tc-ad-landing__products .product-categories a{letter-spacing:normal!important;text-transform:none!important;text-decoration:none!important;color:inherit!important}
 .tc-ad-landing__products .price,.tc-ad-landing__products .price *{word-spacing:normal!important}
-.tc-ad-landing__products .tc-ad-landing__product-actions{margin-top:auto!important;padding-top:12px!important;flex-shrink:0!important}
+.tc-ad-landing__products .tc-ad-landing__product-actions{display:flex!important;flex-direction:column!important;gap:8px!important;margin-top:auto!important;padding-top:12px!important;flex-shrink:0!important}
 .tc-ad-landing__products .tc-ad-landing__product-actions .button,.tc-ad-landing__products .tc-ad-landing__product-actions .add_to_cart_button{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:100%!important;margin:0!important;padding:11px 14px!important;border-radius:10px!important;font-size:.88rem!important;font-weight:700!important;line-height:1.2!important;text-align:center!important;text-decoration:none!important;background:' . $p['primary'] . '!important;border:1px solid ' . $p['primary'] . '!important;color:#fff!important;box-sizing:border-box!important;float:none!important;position:static!important}
 .tc-ad-landing__products .tc-ad-landing__product-actions .button:hover,.tc-ad-landing__products .tc-ad-landing__product-actions .add_to_cart_button:hover{background:' . $p['primary_d'] . '!important;border-color:' . $p['primary_d'] . '!important;color:#fff!important}
+.tc-ad-landing__products .tc-ad-landing__product-actions .tc-wa-consult-btn{background:#25D366!important;border-color:#25D366!important;margin-top:0!important}
+.tc-ad-landing__products .tc-ad-landing__product-actions .tc-wa-consult-btn:hover{background:#1ebe5b!important;border-color:#1ebe5b!important}
 .tc-ad-landing__location{text-align:center;margin-top:28px;font-size:1rem;font-weight:600}
 .tc-ad-landing__location a{color:' . $p['primary'] . '!important;text-decoration:none!important}
 .tc-ad-landing__location a:hover{text-decoration:underline!important}
@@ -981,6 +1030,9 @@ function tc_ad_landing_render_product_card( $product ) {
 						'attributes' => $button_attrs,
 					)
 				);
+				if ( function_exists( 'tc_woocommerce_wa_consult_button' ) ) {
+					echo tc_woocommerce_wa_consult_button( $product ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
 				?>
 			</div>
 		</div>
